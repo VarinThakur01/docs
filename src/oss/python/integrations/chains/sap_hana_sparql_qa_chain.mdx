@@ -27,7 +27,6 @@ connection = dbapi.connect(
     user=os.environ.get("HANA_DB_USER"),
     password=os.environ.get("HANA_DB_PASSWORD"),
     autocommit=True,
-    sslValidateCertificate=False,
 )
 ```
 
