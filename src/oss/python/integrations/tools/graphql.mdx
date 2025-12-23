@@ -16,16 +16,8 @@ First, you need to install `httpx` and `gql` Python packages.
 pip install httpx gql > /dev/null
 ```
 
-```output
-Note: you may need to restart the kernel to use updated packages.
-```
-
 ```python
-%pip install -qU  langchain-community
-```
-
-```output
-Note: you may need to restart the kernel to use updated packages.
+pip install -qU  langchain-community
 ```
 
 Now, let's create a BaseGraphQLTool instance with the specified Star Wars API endpoint and initialize an Agent with the tool.
@@ -48,7 +40,8 @@ tools = load_tools(
 ```python
 from langchain.agents import create_agent
 
-agent = create_agent("openai:gpt-4.1-mini", tools)
+
+agent = create_agent("gpt-4.1-mini", tools)
 ```
 
 Now, we can use the Agent to run queries against the Star Wars GraphQL API. Let's ask the Agent to list all the Star Wars films and their release dates.
@@ -87,7 +80,7 @@ for step in agent.stream(
     step["messages"][-1].pretty_print()
 ```
 
-```output
+```text
 ================================ Human Message =================================
 
 Search for the titles of all the stawars films stored in the graphql database that has this schema allFilms {

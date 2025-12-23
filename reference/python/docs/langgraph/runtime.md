@@ -1,9 +1,5 @@
-# Runtime
-
 ::: langgraph.runtime.Runtime
     options:
-      show_root_heading: true
-      show_root_full_path: false
       members:
         - context
         - store
@@ -14,5 +10,3 @@
     options:
       members:
         - get_runtime
-
-

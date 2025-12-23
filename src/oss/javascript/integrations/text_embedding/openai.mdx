@@ -1,5 +1,5 @@
 ---
-title: OpenAI
+title: OpenAIEmbeddings
 ---
 
 This will help you get started with OpenAIEmbeddings [embedding models](/oss/integrations/text_embedding) using LangChain. For detailed documentation on `OpenAIEmbeddings` features and configuration options, please refer to the [API reference](https://api.js.langchain.com/classes/langchain_openai.OpenAIEmbeddings.html).
@@ -24,7 +24,7 @@ Head to [platform.openai.com](https://platform.openai.com) to sign up to OpenAI 
 export OPENAI_API_KEY="your-api-key"
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -35,14 +35,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain OpenAIEmbeddings integration lives in the `@langchain/openai` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/openai @langchain/core
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/openai @langchain/core
 ```
+```bash yarn
+yarn add @langchain/openai @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/openai @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -69,7 +72,7 @@ Below, see how to index and retrieve data using the `embeddings` object we initi
 
 ```typescript
 // Create a vector store with a sample text
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 
 const text = "LangChain is the framework for building context-aware reasoning applications";
 
@@ -87,7 +90,7 @@ const retrievedDocuments = await retriever.invoke("What is LangChain?");
 retrievedDocuments[0].pageContent;
 ```
 
-```output
+```text
 LangChain is the framework for building context-aware reasoning applications
 ```
 
@@ -107,7 +110,7 @@ const singleVector = await embeddings.embedQuery(text);
 console.log(singleVector.slice(0, 100));
 ```
 
-```output
+```text
 [
     -0.01927683,  0.0037708976,  -0.032942563,  0.0037671267,  0.008175306,
    -0.012511838,  -0.009713832,   0.021403614,  -0.015377721, 0.0018684798,
@@ -145,7 +148,7 @@ console.log(vectors[0].slice(0, 100));
 console.log(vectors[1].slice(0, 100));
 ```
 
-```output
+```text
 [
     -0.01927683,  0.0037708976,  -0.032942563,  0.0037671267,  0.008175306,
    -0.012511838,  -0.009713832,   0.021403614,  -0.015377721, 0.0018684798,
@@ -207,7 +210,7 @@ const vectorsDefaultDimensions = await embeddingsDefaultDimensions.embedDocument
 console.log(vectorsDefaultDimensions[0].length);
 ```
 
-```output
+```text
 3072
 ```
 
@@ -225,7 +228,7 @@ const vectors1024 = await embeddings1024.embedDocuments(["some text"]);
 console.log(vectors1024[0].length);
 ```
 
-```output
+```text
 1024
 ```
 
@@ -246,6 +249,8 @@ const model = new OpenAIEmbeddings({
 You can also pass other `ClientOptions` parameters accepted by the official SDK.
 
 If you are hosting on Azure OpenAI, see the [dedicated page instead](/oss/integrations/text_embedding/azure_openai).
+
+---
 
 ## API reference
 

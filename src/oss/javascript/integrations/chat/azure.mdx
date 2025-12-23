@@ -45,7 +45,7 @@ AZURE_OPENAI_API_KEY=<YOUR_KEY>
 AZURE_OPENAI_API_VERSION="2024-02-01"
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -56,16 +56,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain AzureChatOpenAI integration lives in the `@langchain/openai` package:
 
-```{=mdx}
-
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/openai @langchain/core
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/openai @langchain/core
 ```
+```bash yarn
+yarn add @langchain/openai @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/openai @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -99,7 +100,7 @@ const aiMsg = await llm.invoke([
 aiMsg
 ```
 
-```output
+```text
 AIMessage {
   "id": "chatcmpl-9qrWKByvVrzWMxSn8joRZAklHoB32",
   "content": "J'adore la programmation.",
@@ -126,7 +127,7 @@ AIMessage {
 console.log(aiMsg.content)
 ```
 
-```output
+```text
 J'adore la programmation.
 ```
 
@@ -206,25 +207,29 @@ If you are using the deprecated Azure OpenAI SDK with the `@langchain/azure-open
 
 1. Install the new `@langchain/openai` package and remove the previous `@langchain/azure-openai` package:
 
-```{=mdx}
-
-<Npm2Yarn>
-  @langchain/openai
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/openai
 ```
+```bash yarn
+yarn add @langchain/openai
+```
+```bash pnpm
+pnpm add @langchain/openai
+```
+</CodeGroup>
 
 ```bash
 npm uninstall @langchain/azure-openai
 ```
 
-2. Update your imports to use the new `AzureChatOpenAI` class from the `@langchain/openai` package:
+2. Update your imports to use the new @[`AzureChatOpenAI`] class from the `@langchain/openai` package:
 
    ```typescript
    import { AzureChatOpenAI } from "@langchain/openai";
    ```
 
-3. Update your code to use the new `AzureChatOpenAI` class and pass the required parameters:
+3. Update your code to use the new @[`AzureChatOpenAI`] class and pass the required parameters:
 
    ```typescript
    const model = new AzureChatOpenAI({
@@ -240,6 +245,8 @@ npm uninstall @langchain/azure-openai
    - If you were using Azure Managed Identity, you now need to use the `azureADTokenProvider` parameter to the constructor instead of `credentials`, see the [Azure Managed Identity](#using-azure-managed-identity) section for more details.
 
    - If you were using environment variables, you now have to set the `AZURE_OPENAI_API_INSTANCE_NAME` environment variable instead of `AZURE_OPENAI_API_ENDPOINT`, and add the `AZURE_OPENAI_API_VERSION` environment variable to specify the API version.
+
+---
 
 ## API reference
 

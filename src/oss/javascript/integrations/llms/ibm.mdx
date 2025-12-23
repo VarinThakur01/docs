@@ -94,7 +94,7 @@ const props = {
 const instance = new WatsonxLLM(props);
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -105,15 +105,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain IBM watsonx.ai integration lives in the `@langchain/community` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -147,6 +149,32 @@ Note:
 - Depending on the region of your provisioned service instance, use correct serviceUrl.
 - You need to specify the model you want to use for inferencing through model_id.
 
+### Using Model Gateway
+```typescript
+import { WatsonxLLM } from "@langchain/community/llms/ibm";
+
+const props = {
+  decoding_method: "sample",
+  maxNewTokens: 100,
+  minNewTokens: 1,
+  temperature: 0.5,
+  topK: 50,
+  topP: 1,
+};
+
+const instance = new WatsonxLLM({
+  version: "YYYY-MM-DD",
+  serviceUrl: process.env.API_URL,
+  model: "<MODEL_ID>",
+  modelGateway: true,
+  ...props,
+});
+```
+
+To use model gateway with Langchain, you need to previously create a provider and add model via `@ibm-cloud/watsonx-ai` SDK or `watsonx.ai` API. Follow this documentation:
+- [API](https://cloud.ibm.com/apidocs/watsonx-ai#create-watsonxai-provider).
+- [SDK](https://ibm.github.io/watsonx-ai-node-sdk/modules/1_7_x.gateway.html).
+
 ## Invocation and generation
 
 ```javascript
@@ -160,7 +188,7 @@ const results = await instance.generate([
 console.log(results);
 ```
 
-```output
+```javascript
 
 print('Hello world.')<|endoftext|>
 {
@@ -187,7 +215,7 @@ await chain.invoke(
 )
 ```
 
-```output
+```text
 Ich liebe Programmieren.
 
 To express that you are passionate about programming in German,
@@ -206,7 +234,7 @@ const result2 = await instance.invoke("Print hello world.", {
 console.log(result2);
 ```
 
-```output
+```text
 print('Hello world.')<|endoftext|>
 ```
 
@@ -219,9 +247,11 @@ const tokens = await instance.getNumTokens("Print hello world.");
 console.log(tokens);
 ```
 
-```output
+```text
 4
 ```
+
+---
 
 ## API reference
 

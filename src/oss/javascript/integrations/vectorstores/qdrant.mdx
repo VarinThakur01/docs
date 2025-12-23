@@ -2,13 +2,9 @@
 title: QdrantVectorStore
 ---
 
-```{=mdx}
 <Tip>
-**Compatibility**
-
-Only available on Node.js.
+**Compatibility**: Only available on Node.js.
 </Tip>
-```
 
 [Qdrant](https://qdrant.tech/) is a vector similarity search engine. It provides a production-ready service with a convenient API to store, search, and manage points - vectors with an additional payload.
 
@@ -28,14 +24,17 @@ To use Qdrant vector stores, you'll need to set up a Qdrant instance and install
 
 This guide will also use [OpenAI embeddings](/oss/integrations/text_embedding/openai), which require you to install the `@langchain/openai` integration package. You can also use [other supported embeddings models](/oss/integrations/text_embedding) if you wish.
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/qdrant @langchain/core @langchain/openai
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/qdrant @langchain/core @langchain/openai
 ```
+```bash yarn
+yarn add @langchain/qdrant @langchain/core @langchain/openai
+```
+```bash pnpm
+pnpm add @langchain/qdrant @langchain/core @langchain/openai
+```
+</CodeGroup>
 
 After installing the required dependencies, run a Qdrant instance with Docker on your computer by following the [Qdrant setup instructions](https://qdrant.tech/documentation/quickstart/). Note the URL your container runs on.
 
@@ -54,7 +53,7 @@ If you are using OpenAI embeddings for this guide, you'll need to set your OpenA
 process.env.OPENAI_API_KEY = "YOUR_API_KEY";
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```typescript
 // process.env.LANGSMITH_TRACING="true"
@@ -133,7 +132,7 @@ for (const doc of similaritySearchResults) {
 }
 ```
 
-```output
+```text
 * The powerhouse of the cell is the mitochondria [{"source":"https://example.com"}]
 * Mitochondria are made out of lipids [{"source":"https://example.com"}]
 ```
@@ -150,7 +149,7 @@ for (const [doc, score] of similaritySearchWithScoreResults) {
 }
 ```
 
-```output
+```text
 * [SIM=0.165] The powerhouse of the cell is the mitochondria [{"source":"https://example.com"}]
 * [SIM=0.148] Mitochondria are made out of lipids [{"source":"https://example.com"}]
 ```
@@ -168,7 +167,7 @@ const retriever = vectorStore.asRetriever({
 await retriever.invoke("biology");
 ```
 
-```output
+```javascript
 [
   Document {
     pageContent: 'The powerhouse of the cell is the mitochondria',
@@ -190,6 +189,8 @@ For guides on how to use this vector store for retrieval-augmented generation (R
 - [Build a RAG app with LangChain](/oss/langchain/rag).
 - [Agentic RAG](/oss/langgraph/agentic-rag)
 - [Retrieval docs](/oss/langchain/retrieval)
+
+---
 
 ## API reference
 

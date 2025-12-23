@@ -9,7 +9,7 @@ We can accomplish this using the [Doctran](https://github.com/psychic-api/doctra
 See [this notebook](https://github.com/psychic-api/doctran/blob/main/benchmark.ipynb) for benchmarks on vector similarity scores for various queries based on raw documents versus interrogated documents.
 
 ```python
-%pip install -qU  doctran
+pip install -qU  doctran
 ```
 
 ```python
@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 load_dotenv()
 ```
 
-```output
+```text
 True
 ```
 
@@ -72,7 +72,7 @@ jason@psychic.dev
 print(sample_text)
 ```
 
-```output
+```text
 [Generated with ChatGPT]
 
 Confidential Document - For Internal Use Only
@@ -124,7 +124,7 @@ transformed_document = qa_transformer.transform_documents(documents)
 print(json.dumps(transformed_document[0].metadata, indent=2))
 ```
 
-```output
+```json
 {
   "questions_and_answers": [
     {

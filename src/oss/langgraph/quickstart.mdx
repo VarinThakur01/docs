@@ -2,34 +2,34 @@
 title: Quickstart
 ---
 
-import AlphaCallout from "/snippets/alpha-lg-callout.mdx";
 
-<AlphaCallout />
 
 This quickstart demonstrates how to build a calculator agent using the LangGraph Graph API or the Functional API.
 
 - [Use the Graph API](#use-the-graph-api) if you prefer to define your agent as a graph of nodes and edges.
 - [Use the Functional API](#use-the-functional-api) if you prefer to define your agent as a single function.
 
-<Tip>
 For conceptual information, see [Graph API overview](/oss/langgraph/graph-api) and [Functional API overview](/oss/langgraph/functional-api).
-</Tip>
+
+<Info>
+For this example, you will need to set up a [Claude (Anthropic)](https://www.anthropic.com/) account and get an API key. Then, set the `ANTHROPIC_API_KEY` environment variable in your terminal.
+</Info>
 
 <Tabs>
 <Tab title="Use the Graph API">
 
 ## 1. Define tools and model
 
-In this example, we'll use the Claude 3.7 Sonnet model and define tools for addition, multiplication, and division.
+In this example, we'll use the Claude Sonnet 4.5 model and define tools for addition, multiplication, and division.
 
 :::python
-
 ```python
-from langchain_core.tools import tool
+from langchain.tools import tool
 from langchain.chat_models import init_chat_model
 
-llm = init_chat_model(
-    "anthropic:claude-3-7-sonnet-latest",
+
+model = init_chat_model(
+    "claude-sonnet-4-5-20250929",
     temperature=0
 )
 
@@ -37,33 +37,33 @@ llm = init_chat_model(
 # Define tools
 @tool
 def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Multiply `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a * b
 
 
 @tool
 def add(a: int, b: int) -> int:
-    """Adds a and b.
+    """Adds `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a + b
 
 
 @tool
 def divide(a: int, b: int) -> float:
-    """Divide a and b.
+    """Divide `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a / b
 
@@ -71,19 +71,18 @@ def divide(a: int, b: int) -> float:
 # Augment the LLM with tools
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
-llm_with_tools = llm.bind_tools(tools)
+model_with_tools = model.bind_tools(tools)
 ```
 :::
 
 :::js
-
 ```typescript
 import { ChatAnthropic } from "@langchain/anthropic";
 import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 
-const llm = new ChatAnthropic({
-  model: "claude-3-7-sonnet-latest",
+const model = new ChatAnthropic({
+  model: "claude-sonnet-4-5-20250929",
   temperature: 0,
 });
 
@@ -122,7 +121,7 @@ const toolsByName = {
   [divide.name]: divide,
 };
 const tools = Object.values(toolsByName);
-const llmWithTools = llm.bindTools(tools);
+const modelWithTools = model.bindTools(tools);
 ```
 :::
 
@@ -132,10 +131,31 @@ The graph's state is used to store the messages and the number of LLM calls.
 
 :::python
 
+<Tip>
+    State in LangGraph persists throughout the agent's execution.
+
+    The `Annotated` type with `operator.add` ensures that new messages are appended to the existing list rather than replacing it.
+</Tip>
+
+:::
+
+:::js
+
+<Tip>
+    State in LangGraph persists throughout the agent's execution.
+
+    The `MessagesAnnotation` constant includes a built-in reducer for appending messages. The `llmCalls` field uses `(x, y) => x + y` to accumulate the count.
+</Tip>
+
+:::
+
+:::python
+
 ```python
-from langchain_core.messages import AnyMessage
+from langchain.messages import AnyMessage
 from typing_extensions import TypedDict, Annotated
 import operator
+
 
 class MessagesState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
@@ -144,20 +164,19 @@ class MessagesState(TypedDict):
 :::
 
 :::js
-
 ```typescript
-import { StateGraph, START, END } from "@langchain/langgraph";
-import { MessagesZodMeta } from "@langchain/langgraph";
-import { registry } from "@langchain/langgraph/zod";
-import { type BaseMessage } from "@langchain/core/messages";
+import { StateGraph, START, END, MessagesAnnotation, Annotation } from "@langchain/langgraph";
 
-const MessagesState = z.object({
-  messages: z
-    .array(z.custom<BaseMessage>())
-    .register(registry, MessagesZodMeta),
-  llmCalls: z.number().optional(),
+const MessagesState = Annotation.Root({
+  ...MessagesAnnotation.spec,
+  llmCalls: Annotation<number>({
+    reducer: (x, y) => x + y,
+    default: () => 0,
+  }),
 });
 
+// Extract the state type for function signatures
+type MessagesStateType = typeof MessagesState.State;
 ```
 :::
 
@@ -168,13 +187,15 @@ The model node is used to call the LLM and decide whether to call a tool or not.
 :::python
 
 ```python
-from langchain_core.messages import SystemMessage
+from langchain.messages import SystemMessage
+
+
 def llm_call(state: dict):
     """LLM decides whether to call a tool or not"""
 
     return {
         "messages": [
-            llm_with_tools.invoke(
+            model_with_tools.invoke(
                 [
                     SystemMessage(
                         content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
@@ -192,15 +213,15 @@ def llm_call(state: dict):
 
 ```typescript
 import { SystemMessage } from "@langchain/core/messages";
-async function llmCall(state: z.infer<typeof MessagesState>) {
+async function llmCall(state: MessagesStateType) {
   return {
-    messages: await llmWithTools.invoke([
+    messages: [await modelWithTools.invoke([
       new SystemMessage(
         "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
       ),
       ...state.messages,
-    ]),
-    llmCalls: (state.llmCalls ?? 0) + 1,
+    ])],
+    llmCalls: 1,
   };
 }
 ```
@@ -213,7 +234,8 @@ The tool node is used to call the tools and return the results.
 :::python
 
 ```python
-from langchain_core.messages import ToolMessage
+from langchain.messages import ToolMessage
+
 
 def tool_node(state: dict):
     """Performs the tool call"""
@@ -230,11 +252,11 @@ def tool_node(state: dict):
 :::js
 
 ```typescript
-import { isAIMessage, ToolMessage } from "@langchain/core/messages";
-async function toolNode(state: z.infer<typeof MessagesState>) {
+import { AIMessage, ToolMessage } from "@langchain/core/messages";
+async function toolNode(state: MessagesStateType) {
   const lastMessage = state.messages.at(-1);
 
-  if (lastMessage == null || !isAIMessage(lastMessage)) {
+  if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
     return { messages: [] };
   }
 
@@ -260,14 +282,17 @@ The conditional edge function is used to route to the tool node or end based upo
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
 
+
 def should_continue(state: MessagesState) -> Literal["tool_node", END]:
     """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
 
     messages = state["messages"]
     last_message = messages[-1]
+
     # If the LLM makes a tool call, then perform an action
     if last_message.tool_calls:
         return "tool_node"
+
     # Otherwise, we stop (reply to the user)
     return END
 ```
@@ -276,9 +301,13 @@ def should_continue(state: MessagesState) -> Literal["tool_node", END]:
 :::js
 
 ```typescript
-async function shouldContinue(state: z.infer<typeof MessagesState>) {
+async function shouldContinue(state: MessagesStateType) {
   const lastMessage = state.messages.at(-1);
-  if (lastMessage == null || !isAIMessage(lastMessage)) return END;
+
+  // Check if it's an AIMessage before accessing tool_calls
+  if (!lastMessage || !AIMessage.isInstance(lastMessage)) {
+    return END;
+  }
 
   // If the LLM makes a tool call, then perform an action
   if (lastMessage.tool_calls?.length) {
@@ -293,7 +322,7 @@ async function shouldContinue(state: z.infer<typeof MessagesState>) {
 
 ## 6. Build and compile the agent
 
-The agent is built using the `StateGraph` class and compiled using the `compile` method.
+The agent is built using the @[`StateGraph`] class and compiled using the @[`compile`][StateGraph.compile] method.
 
 :::python
 
@@ -322,7 +351,7 @@ from IPython.display import Image, display
 display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
 
 # Invoke
-from langchain_core.messages import HumanMessage
+from langchain.messages import HumanMessage
 messages = [HumanMessage(content="Add 3 and 4.")]
 messages = agent.invoke({"messages": messages})
 for m in messages["messages"]:
@@ -348,10 +377,14 @@ const result = await agent.invoke({
 });
 
 for (const message of result.messages) {
-  console.log(`[${message.getType()}]: ${message.text}`);
+  console.log(`[${message.type}]: ${message.text}`);
 }
 ```
 :::
+
+<Tip>
+    To learn how to trace your agent with LangSmith, see the [LangSmith documentation](/langsmith/trace-with-langgraph).
+</Tip>
 
 Congratulations! You've built your first agent using the LangGraph Graph API.
 
@@ -361,11 +394,12 @@ Congratulations! You've built your first agent using the LangGraph Graph API.
 ```python
 # Step 1: Define tools and model
 
-from langchain_core.tools import tool
+from langchain.tools import tool
 from langchain.chat_models import init_chat_model
 
-llm = init_chat_model(
-    "anthropic:claude-3-7-sonnet-latest",
+
+model = init_chat_model(
+    "claude-sonnet-4-5-20250929",
     temperature=0
 )
 
@@ -373,33 +407,33 @@ llm = init_chat_model(
 # Define tools
 @tool
 def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Multiply `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a * b
 
 
 @tool
 def add(a: int, b: int) -> int:
-    """Adds a and b.
+    """Adds `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a + b
 
 
 @tool
 def divide(a: int, b: int) -> float:
-    """Divide a and b.
+    """Divide `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a / b
 
@@ -407,26 +441,29 @@ def divide(a: int, b: int) -> float:
 # Augment the LLM with tools
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
-llm_with_tools = llm.bind_tools(tools)
+model_with_tools = model.bind_tools(tools)
 
 # Step 2: Define state
 
-from langchain_core.messages import AnyMessage
+from langchain.messages import AnyMessage
 from typing_extensions import TypedDict, Annotated
 import operator
+
 
 class MessagesState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
     llm_calls: int
 
 # Step 3: Define model node
-from langchain_core.messages import SystemMessage
+from langchain.messages import SystemMessage
+
+
 def llm_call(state: dict):
     """LLM decides whether to call a tool or not"""
 
     return {
         "messages": [
-            llm_with_tools.invoke(
+            model_with_tools.invoke(
                 [
                     SystemMessage(
                         content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
@@ -441,7 +478,8 @@ def llm_call(state: dict):
 
 # Step 4: Define tool node
 
-from langchain_core.messages import ToolMessage
+from langchain.messages import ToolMessage
+
 
 def tool_node(state: dict):
     """Performs the tool call"""
@@ -458,15 +496,18 @@ def tool_node(state: dict):
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
 
+
 # Conditional edge function to route to the tool node or end based upon whether the LLM made a tool call
 def should_continue(state: MessagesState) -> Literal["tool_node", END]:
     """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
 
     messages = state["messages"]
     last_message = messages[-1]
+
     # If the LLM makes a tool call, then perform an action
     if last_message.tool_calls:
         return "tool_node"
+
     # Otherwise, we stop (reply to the user)
     return END
 
@@ -497,26 +538,25 @@ from IPython.display import Image, display
 display(Image(agent.get_graph(xray=True).draw_mermaid_png()))
 
 # Invoke
-from langchain_core.messages import HumanMessage
+from langchain.messages import HumanMessage
 messages = [HumanMessage(content="Add 3 and 4.")]
 messages = agent.invoke({"messages": messages})
 for m in messages["messages"]:
     m.pretty_print()
 
 ```
-
 :::
 
 :::js
-
 ```typescript
-// Step 1: define tools and model
+// Step 1: Define tools and model
+
 import { ChatAnthropic } from "@langchain/anthropic";
 import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 
-const llm = new ChatAnthropic({
-  model: "claude-3-7-sonnet-latest",
+const model = new ChatAnthropic({
+  model: "claude-sonnet-4-5-20250929",
   temperature: 0,
 });
 
@@ -555,41 +595,47 @@ const toolsByName = {
   [divide.name]: divide,
 };
 const tools = Object.values(toolsByName);
-const llmWithTools = llm.bindTools(tools);
+const modelWithTools = model.bindTools(tools);
 
 // Step 2: Define state
-import { StateGraph, START, END } from "@langchain/langgraph";
-import { MessagesZodMeta } from "@langchain/langgraph";
-import { registry } from "@langchain/langgraph/zod";
-import { type BaseMessage } from "@langchain/core/messages";
 
-const MessagesState = z.object({
-  messages: z
-    .array(z.custom<BaseMessage>())
-    .register(registry, MessagesZodMeta),
-  llmCalls: z.number().optional(),
+import { StateGraph, START, END, MessagesAnnotation, Annotation } from "@langchain/langgraph";
+
+const MessagesState = Annotation.Root({
+  ...MessagesAnnotation.spec,
+  llmCalls: Annotation<number>({
+    reducer: (x, y) => x + y,
+    default: () => 0,
+  }),
 });
 
+// Extract the state type for function signatures
+type MessagesStateType = typeof MessagesState.State;
+
 // Step 3: Define model node
+
 import { SystemMessage } from "@langchain/core/messages";
-async function llmCall(state: z.infer<typeof MessagesState>) {
+
+async function llmCall(state: MessagesStateType) {
   return {
-    messages: await llmWithTools.invoke([
+    messages: [await modelWithTools.invoke([
       new SystemMessage(
         "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
       ),
       ...state.messages,
-    ]),
-    llmCalls: (state.llmCalls ?? 0) + 1,
+    ])],
+    llmCalls: 1,
   };
 }
 
 // Step 4: Define tool node
-import { isAIMessage, ToolMessage } from "@langchain/core/messages";
-async function toolNode(state: z.infer<typeof MessagesState>) {
+
+import { AIMessage, ToolMessage } from "@langchain/core/messages";
+
+async function toolNode(state: MessagesStateType) {
   const lastMessage = state.messages.at(-1);
 
-  if (lastMessage == null || !isAIMessage(lastMessage)) {
+  if (lastMessage == null || !AIMessage.isInstance(lastMessage)) {
     return { messages: [] };
   }
 
@@ -604,9 +650,14 @@ async function toolNode(state: z.infer<typeof MessagesState>) {
 }
 
 // Step 5: Define logic to determine whether to end
-async function shouldContinue(state: z.infer<typeof MessagesState>) {
+
+async function shouldContinue(state: MessagesStateType) {
   const lastMessage = state.messages.at(-1);
-  if (lastMessage == null || !isAIMessage(lastMessage)) return END;
+
+  // Check if it's an AIMessage before accessing tool_calls
+  if (!lastMessage || !AIMessage.isInstance(lastMessage)) {
+    return END;
+  }
 
   // If the LLM makes a tool call, then perform an action
   if (lastMessage.tool_calls?.length) {
@@ -618,6 +669,7 @@ async function shouldContinue(state: z.infer<typeof MessagesState>) {
 }
 
 // Step 6: Build and compile the agent
+
 const agent = new StateGraph(MessagesState)
   .addNode("llmCall", llmCall)
   .addNode("toolNode", toolNode)
@@ -633,7 +685,7 @@ const result = await agent.invoke({
 });
 
 for (const message of result.messages) {
-  console.log(`[${message.getType()}]: ${message.text}`);
+  console.log(`[${message.type}]: ${message.text}`);
 }
 ```
 :::
@@ -644,16 +696,17 @@ for (const message of result.messages) {
 
 ## 1. Define tools and model
 
-In this example, we'll use the Claude 3.7 Sonnet model and define tools for addition, multiplication, and division.
+In this example, we'll use the Claude Sonnet 4.5 model and define tools for addition, multiplication, and division.
 
 :::python
 
 ```python
-from langchain_core.tools import tool
+from langchain.tools import tool
 from langchain.chat_models import init_chat_model
 
-llm = init_chat_model(
-    "anthropic:claude-3-7-sonnet-latest",
+
+model = init_chat_model(
+    "claude-sonnet-4-5-20250929",
     temperature=0
 )
 
@@ -661,33 +714,33 @@ llm = init_chat_model(
 # Define tools
 @tool
 def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Multiply `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a * b
 
 
 @tool
 def add(a: int, b: int) -> int:
-    """Adds a and b.
+    """Adds `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a + b
 
 
 @tool
 def divide(a: int, b: int) -> float:
-    """Divide a and b.
+    """Divide `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a / b
 
@@ -695,15 +748,15 @@ def divide(a: int, b: int) -> float:
 # Augment the LLM with tools
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
-llm_with_tools = llm.bind_tools(tools)
+model_with_tools = model.bind_tools(tools)
 
 from langgraph.graph import add_messages
-from langchain_core.messages import (
+from langchain.messages import (
     SystemMessage,
     HumanMessage,
-    BaseMessage,
     ToolCall,
 )
+from langchain_core.messages import BaseMessage
 from langgraph.func import entrypoint, task
 ```
 :::
@@ -715,8 +768,8 @@ import { ChatAnthropic } from "@langchain/anthropic";
 import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 
-const llm = new ChatAnthropic({
-  model: "claude-3-7-sonnet-latest",
+const model = new ChatAnthropic({
+  model: "claude-sonnet-4-5-20250929",
   temperature: 0,
 });
 
@@ -755,7 +808,7 @@ const toolsByName = {
   [divide.name]: divide,
 };
 const tools = Object.values(toolsByName);
-const llmWithTools = llm.bindTools(tools);
+const modelWithTools = model.bindTools(tools);
 
 ```
 :::
@@ -766,11 +819,15 @@ The model node is used to call the LLM and decide whether to call a tool or not.
 
 :::python
 
+<Tip>
+    The @[`@task`] decorator marks a function as a task that can be executed as part of the agent. Tasks can be called synchronously or asynchronously within your entrypoint function.
+</Tip>
+
 ```python
 @task
 def call_llm(messages: list[BaseMessage]):
     """LLM decides whether to call a tool or not"""
-    return llm_with_tools.invoke(
+    return model_with_tools.invoke(
         [
             SystemMessage(
                 content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
@@ -782,12 +839,11 @@ def call_llm(messages: list[BaseMessage]):
 :::
 
 :::js
-
 ```typescript
 import { task, entrypoint } from "@langchain/langgraph";
 import { SystemMessage } from "@langchain/core/messages";
 const callLlm = task({ name: "callLlm" }, async (messages: BaseMessage[]) => {
-  return llmWithTools.invoke([
+  return modelWithTools.invoke([
     new SystemMessage(
       "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
     ),
@@ -802,7 +858,6 @@ const callLlm = task({ name: "callLlm" }, async (messages: BaseMessage[]) => {
 The tool node is used to call the tools and return the results.
 
 :::python
-
 ```python
 @task
 def call_tool(tool_call: ToolCall):
@@ -814,7 +869,6 @@ def call_tool(tool_call: ToolCall):
 :::
 
 :::js
-
 ```typescript
 import type { ToolCall } from "@langchain/core/messages/tool";
 const callTool = task({ name: "callTool" }, async (toolCall: ToolCall) => {
@@ -826,28 +880,32 @@ const callTool = task({ name: "callTool" }, async (toolCall: ToolCall) => {
 
 ## 4. Define agent
 
-The agent is built using the `entrypoint` function.
-
 :::python
+
+The agent is built using the @[`@entrypoint`] function.
+
+<Note>
+    In the Functional API, instead of defining nodes and edges explicitly, you write standard control flow logic (loops, conditionals) within a single function.
+</Note>
 
 ```python
 @entrypoint()
 def agent(messages: list[BaseMessage]):
-    llm_response = call_llm(messages).result()
+    model_response = call_llm(messages).result()
 
     while True:
-        if not llm_response.tool_calls:
+        if not model_response.tool_calls:
             break
 
         # Execute tools
         tool_result_futures = [
-            call_tool(tool_call) for tool_call in llm_response.tool_calls
+            call_tool(tool_call) for tool_call in model_response.tool_calls
         ]
         tool_results = [fut.result() for fut in tool_result_futures]
-        messages = add_messages(messages, [llm_response, *tool_results])
-        llm_response = call_llm(messages).result()
+        messages = add_messages(messages, [model_response, *tool_results])
+        model_response = call_llm(messages).result()
 
-    messages = add_messages(messages, llm_response)
+    messages = add_messages(messages, model_response)
     return messages
 
 # Invoke
@@ -859,24 +917,24 @@ for chunk in agent.stream(messages, stream_mode="updates"):
 :::
 
 :::js
-
 ```typescript
 import { addMessages } from "@langchain/langgraph";
-import { type BaseMessage, isAIMessage } from "@langchain/core/messages";
+import { type BaseMessage } from "@langchain/core/messages";
+
 const agent = entrypoint({ name: "agent" }, async (messages: BaseMessage[]) => {
-  let llmResponse = await callLlm(messages);
+  let modelResponse = await callLlm(messages);
 
   while (true) {
-    if (!llmResponse.tool_calls?.length) {
+    if (!modelResponse.tool_calls?.length) {
       break;
     }
 
     // Execute tools
     const toolResults = await Promise.all(
-      llmResponse.tool_calls.map((toolCall) => callTool(toolCall))
+      modelResponse.tool_calls.map((toolCall) => callTool(toolCall))
     );
-    messages = addMessages(messages, [llmResponse, ...toolResults]);
-    llmResponse = await callLlm(messages);
+    messages = addMessages(messages, [modelResponse, ...toolResults]);
+    modelResponse = await callLlm(messages);
   }
 
   return messages;
@@ -884,6 +942,7 @@ const agent = entrypoint({ name: "agent" }, async (messages: BaseMessage[]) => {
 
 // Invoke
 import { HumanMessage } from "@langchain/core/messages";
+
 const result = await agent.invoke([new HumanMessage("Add 3 and 4.")]);
 
 for (const message of result) {
@@ -891,6 +950,10 @@ for (const message of result) {
 }
 ```
 :::
+
+<Tip>
+    To learn how to trace your agent with LangSmith, see the [LangSmith documentation](/langsmith/trace-with-langgraph).
+</Tip>
 
 Congratulations! You've built your first agent using the LangGraph Functional API.
 
@@ -900,11 +963,12 @@ Congratulations! You've built your first agent using the LangGraph Functional AP
 ```python
 # Step 1: Define tools and model
 
-from langchain_core.tools import tool
+from langchain.tools import tool
 from langchain.chat_models import init_chat_model
 
-llm = init_chat_model(
-    "anthropic:claude-3-7-sonnet-latest",
+
+model = init_chat_model(
+    "claude-sonnet-4-5-20250929",
     temperature=0
 )
 
@@ -912,33 +976,33 @@ llm = init_chat_model(
 # Define tools
 @tool
 def multiply(a: int, b: int) -> int:
-    """Multiply a and b.
+    """Multiply `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a * b
 
 
 @tool
 def add(a: int, b: int) -> int:
-    """Adds a and b.
+    """Adds `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a + b
 
 
 @tool
 def divide(a: int, b: int) -> float:
-    """Divide a and b.
+    """Divide `a` and `b`.
 
     Args:
-        a: first int
-        b: second int
+        a: First int
+        b: Second int
     """
     return a / b
 
@@ -946,22 +1010,24 @@ def divide(a: int, b: int) -> float:
 # Augment the LLM with tools
 tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
-llm_with_tools = llm.bind_tools(tools)
+model_with_tools = model.bind_tools(tools)
 
 from langgraph.graph import add_messages
-from langchain_core.messages import (
+from langchain.messages import (
     SystemMessage,
     HumanMessage,
-    BaseMessage,
     ToolCall,
 )
+from langchain_core.messages import BaseMessage
 from langgraph.func import entrypoint, task
 
-# Step 2: define model node
+
+# Step 2: Define model node
+
 @task
 def call_llm(messages: list[BaseMessage]):
     """LLM decides whether to call a tool or not"""
-    return llm_with_tools.invoke(
+    return model_with_tools.invoke(
         [
             SystemMessage(
                 content="You are a helpful assistant tasked with performing arithmetic on a set of inputs."
@@ -971,7 +1037,8 @@ def call_llm(messages: list[BaseMessage]):
     )
 
 
-# Step 3: define tool node
+# Step 3: Define tool node
+
 @task
 def call_tool(tool_call: ToolCall):
     """Performs the tool call"""
@@ -979,24 +1046,25 @@ def call_tool(tool_call: ToolCall):
     return tool.invoke(tool_call)
 
 
-# Step 4: define agent
+# Step 4: Define agent
+
 @entrypoint()
 def agent(messages: list[BaseMessage]):
-    llm_response = call_llm(messages).result()
+    model_response = call_llm(messages).result()
 
     while True:
-        if not llm_response.tool_calls:
+        if not model_response.tool_calls:
             break
 
         # Execute tools
         tool_result_futures = [
-            call_tool(tool_call) for tool_call in llm_response.tool_calls
+            call_tool(tool_call) for tool_call in model_response.tool_calls
         ]
         tool_results = [fut.result() for fut in tool_result_futures]
-        messages = add_messages(messages, [llm_response, *tool_results])
-        llm_response = call_llm(messages).result()
+        messages = add_messages(messages, [model_response, *tool_results])
+        model_response = call_llm(messages).result()
 
-    messages = add_messages(messages, llm_response)
+    messages = add_messages(messages, model_response)
     return messages
 
 # Invoke
@@ -1005,19 +1073,18 @@ for chunk in agent.stream(messages, stream_mode="updates"):
     print(chunk)
     print("\n")
 ```
-
 :::
 
 :::js
-
 ```typescript
-// Step 1: define tools and model
+// Step 1: Define tools and model
+
 import { ChatAnthropic } from "@langchain/anthropic";
 import { tool } from "@langchain/core/tools";
 import * as z from "zod";
 
-const llm = new ChatAnthropic({
-  model: "claude-3-7-sonnet-latest",
+const model = new ChatAnthropic({
+  model: "claude-sonnet-4-5-20250929",
   temperature: 0,
 });
 
@@ -1056,13 +1123,14 @@ const toolsByName = {
   [divide.name]: divide,
 };
 const tools = Object.values(toolsByName);
-const llmWithTools = llm.bindTools(tools);
+const modelWithTools = model.bindTools(tools);
 
 // Step 2: Define model node
+
 import { task, entrypoint } from "@langchain/langgraph";
 import { SystemMessage } from "@langchain/core/messages";
 const callLlm = task({ name: "callLlm" }, async (messages: BaseMessage[]) => {
-  return llmWithTools.invoke([
+  return modelWithTools.invoke([
     new SystemMessage(
       "You are a helpful assistant tasked with performing arithmetic on a set of inputs."
     ),
@@ -1070,30 +1138,31 @@ const callLlm = task({ name: "callLlm" }, async (messages: BaseMessage[]) => {
   ]);
 });
 
-// Step 3: define tool node
+// Step 3: Define tool node
+
 import type { ToolCall } from "@langchain/core/messages/tool";
 const callTool = task({ name: "callTool" }, async (toolCall: ToolCall) => {
   const tool = toolsByName[toolCall.name];
   return tool.invoke(toolCall);
 });
 
-// Step 4: define agent
+// Step 4: Define agent
 import { addMessages } from "@langchain/langgraph";
-import { type BaseMessage, isAIMessage } from "@langchain/core/messages";
+import { type BaseMessage } from "@langchain/core/messages";
 const agent = entrypoint({ name: "agent" }, async (messages: BaseMessage[]) => {
-  let llmResponse = await callLlm(messages);
+  let modelResponse = await callLlm(messages);
 
   while (true) {
-    if (!llmResponse.tool_calls?.length) {
+    if (!modelResponse.tool_calls?.length) {
       break;
     }
 
     // Execute tools
     const toolResults = await Promise.all(
-      llmResponse.tool_calls.map((toolCall) => callTool(toolCall))
+      modelResponse.tool_calls.map((toolCall) => callTool(toolCall))
     );
-    messages = addMessages(messages, [llmResponse, ...toolResults]);
-    llmResponse = await callLlm(messages);
+    messages = addMessages(messages, [modelResponse, ...toolResults]);
+    modelResponse = await callLlm(messages);
   }
 
   return messages;
@@ -1104,7 +1173,7 @@ import { HumanMessage } from "@langchain/core/messages";
 const result = await agent.invoke([new HumanMessage("Add 3 and 4.")]);
 
 for (const message of result) {
-  console.log(`[${message.getType()}]: ${message.text}`);
+  console.log(`[${message.type}]: ${message.text}`);
 }
 ```
 :::

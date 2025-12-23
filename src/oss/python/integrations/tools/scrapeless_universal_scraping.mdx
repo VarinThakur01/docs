@@ -108,7 +108,7 @@ result = tool.invoke("https://example.com")
 print(result)
 ```
 
-```output
+```text
 <!DOCTYPE html><html><head>
     <title>Example Domain</title>
 
@@ -167,7 +167,7 @@ result = tool.invoke({"url": "https://exmaple.com", "response_type": "markdown"}
 print(result)
 ```
 
-```output
+```text
 # Well hello there.
 
 Welcome to exmaple.com.
@@ -181,13 +181,14 @@ from langchain_openai import ChatOpenAI
 from langchain_scrapeless import ScrapelessUniversalScrapingTool
 from langchain.agents import create_agent
 
-llm = ChatOpenAI()
+
+model = ChatOpenAI()
 
 tool = ScrapelessUniversalScrapingTool()
 
 # Use the tool with an agent
 tools = [tool]
-agent = create_agent(llm, tools)
+agent = create_agent(model, tools)
 
 for chunk in agent.stream(
     {
@@ -203,7 +204,7 @@ for chunk in agent.stream(
     chunk["messages"][-1].pretty_print()
 ```
 
-```output
+```text
 ================================ Human Message =================================
 
 Use the scrapeless scraping tool to fetch https://www.scrapeless.com/en and extract the h1 tag.
@@ -222,6 +223,8 @@ Name: scrapeless_universal_scraping
 
 The h1 tag extracted from the website https://www.scrapeless.com/en is "Effortless Web Scraping Toolkit for Business and Developers".
 ```
+
+---
 
 ## API reference
 

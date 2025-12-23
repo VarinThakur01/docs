@@ -16,7 +16,7 @@ Then we will need to set some environment variables:
 
 ```python
 pip install dataherald
-%pip install -qU langchain-community
+pip install -qU langchain-community
 ```
 
 ```python
@@ -37,6 +37,6 @@ dataherald = DataheraldAPIWrapper(db_connection_id="65fb766367dd22c99ce1a12d")
 dataherald.run("How many employees are in the company?")
 ```
 
-```output
+```text
 'select COUNT(*) from employees'
 ```

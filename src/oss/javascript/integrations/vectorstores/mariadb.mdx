@@ -2,13 +2,9 @@
 title: MariaDB
 ---
 
-```{=mdx}
 <Tip>
-**Compatibility**
-
-Only available on Node.js.
+**Compatibility**: Only available on Node.js.
 </Tip>
-```
 
 This requires MariaDB 11.7 or later version
 
@@ -30,14 +26,17 @@ This guide will also use [OpenAI embeddings](/oss/integrations/text_embedding/op
 
 We'll also use the [`uuid`](https://www.npmjs.com/package/uuid) package to generate ids in the required format.
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/openai @langchain/core mariadb uuid
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/openai @langchain/core mariadb uuid
 ```
+```bash yarn
+yarn add @langchain/community @langchain/openai @langchain/core mariadb uuid
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/openai @langchain/core mariadb uuid
+```
+</CodeGroup>
 
 ### Setting up an instance
 
@@ -75,7 +74,7 @@ If you are using OpenAI embeddings for this guide, you'll need to set your OpenA
 process.env.OPENAI_API_KEY = "YOUR_API_KEY";
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```typescript
 // process.env.LANGCHAIN_TRACING_V2="true"
@@ -171,7 +170,7 @@ for (const doc of similaritySearchResults) {
 }
 ```
 
-```output
+```text
 * The powerhouse of the cell is the mitochondria [{"year": 2021}]
 * Mitochondria are made out of lipids [{"year": 2022}]
 ```
@@ -193,7 +192,7 @@ for (const [doc, score] of similaritySearchWithScoreResults) {
 }
 ```
 
-```output
+```text
 * [SIM=0.835] The powerhouse of the cell is the mitochondria [{"source":"https://example.com"}]
 * [SIM=0.852] Mitochondria are made out of lipids [{"source":"https://example.com"}]
 ```
@@ -211,7 +210,7 @@ const retriever = vectorStore.asRetriever({
 await retriever.invoke("biology");
 ```
 
-```output
+```javascript
 [
   Document {
     pageContent: 'The powerhouse of the cell is the mitochondria',
@@ -318,6 +317,8 @@ Make sure you close the connection when you are finished to avoid excessive reso
 ```typescript
 await vectorStore.end();
 ```
+
+---
 
 ## API reference
 

@@ -34,7 +34,7 @@ Head to [https://perplexity.ai](https://perplexity.ai) to sign up for Perplexity
 export PERPLEXITY_API_KEY="your-api-key"
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -45,15 +45,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain Perplexity integration lives in the `@langchain/community` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -88,7 +90,7 @@ const aiMsg = await llm.invoke([
 aiMsg
 ```
 
-```output
+```text
 AIMessage {
   "id": "run-71853938-aa30-4861-9019-f12323c09f9a",
   "content": "J'adore la programmation.",
@@ -117,9 +119,11 @@ AIMessage {
 console.log(aiMsg.content)
 ```
 
-```output
+```text
 J'adore la programmation.
 ```
+
+---
 
 ## API reference
 

@@ -14,7 +14,7 @@ Here we'll show how to use the Apache Doris Vector Store.
 ## Setup
 
 ```python
-%pip install -qU  pymysql
+pip install -qU  pymysql
 ```
 
 Set `update_vectordb = False` at the beginning. If there is no docs updated, then we don't need to rebuild the embeddings of docs
@@ -25,7 +25,7 @@ Set `update_vectordb = False` at the beginning. If there is no docs updated, the
 ```
 
 ```python
-from langchain.chains import RetrievalQA
+from langchain_classic.chains import RetrievalQA
 from langchain_community.document_loaders import (
     DirectoryLoader,
     UnstructuredMarkdownLoader,

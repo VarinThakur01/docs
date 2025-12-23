@@ -23,7 +23,7 @@ To create a `ElasticsearchEmbeddingsCache` byte store, you'll need an Elasticsea
 The LangChain `ElasticsearchEmbeddingsCache` integration lives in the `langchain-elasticsearch` package:
 
 ```python
-%pip install -qU langchain-elasticsearch
+pip install -qU langchain-elasticsearch
 ```
 
 ## Instantiation
@@ -67,7 +67,7 @@ kv_store.mget(
 )
 ```
 
-```output
+```text
 [b'value1', b'value2']
 ```
 
@@ -89,7 +89,7 @@ kv_store.mget(
 )
 ```
 
-```output
+```text
 [None, None]
 ```
 
@@ -124,6 +124,8 @@ class SearchableElasticsearchStore(ElasticsearchEmbeddingsCache):
 ```
 
 When overriding the mapping and the document building, please only make additive modifications, keeping the base mapping intact.
+
+---
 
 ## API reference
 

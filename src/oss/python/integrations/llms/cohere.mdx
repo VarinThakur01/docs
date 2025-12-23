@@ -45,7 +45,7 @@ pip install -U langchain-community langchain-cohere
 It's also helpful (but not needed) to set up [LangSmith](https://smith.langchain.com/) for best-in-class observability
 
 ```python
-# os.environ["LANGSMITH_TRACING"] = "true"
+os.environ["LANGSMITH_TRACING"] = "true"
 # os.environ["LANGSMITH_API_KEY"] = getpass.getpass()
 ```
 
@@ -55,7 +55,7 @@ Cohere supports all [LLM](/oss/langchain/models) functionality:
 
 ```python
 from langchain_cohere import Cohere
-from langchain_core.messages import HumanMessage
+from langchain.messages import HumanMessage
 ```
 
 ```python
@@ -67,7 +67,7 @@ message = "Knock knock"
 model.invoke(message)
 ```
 
-```output
+```text
 " Who's there?"
 ```
 
@@ -75,7 +75,7 @@ model.invoke(message)
 await model.ainvoke(message)
 ```
 
-```output
+```text
 " Who's there?"
 ```
 
@@ -84,7 +84,7 @@ for chunk in model.stream(message):
     print(chunk, end="", flush=True)
 ```
 
-```output
+```text
  Who's there?
 ```
 
@@ -92,9 +92,11 @@ for chunk in model.stream(message):
 model.batch([message])
 ```
 
-```output
+```text
 [" Who's there?"]
 ```
+
+---
 
 ## API reference
 

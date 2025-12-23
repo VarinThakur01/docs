@@ -9,7 +9,7 @@ title: Fleet AI Context
 Let's take a look at how we can use these embeddings to power a docs retrieval system and ultimately a simple code-generating chain!
 
 ```python
-%pip install -qU  langchain fleet-context langchain-openai pandas faiss-cpu # faiss-gpu for CUDA supported GPU
+pip install -qU  langchain fleet-context langchain-openai pandas faiss-cpu # faiss-gpu for CUDA supported GPU
 ```
 
 ```python
@@ -17,7 +17,7 @@ from operator import itemgetter
 from typing import Any, Optional, Type
 
 import pandas as pd
-from langchain.retrievers import MultiVectorRetriever
+from langchain_classic.retrievers import MultiVectorRetriever
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_core.stores import BaseStore

@@ -71,14 +71,14 @@ tools = load_tools(["searx-search-results-json"],
 
 #### Quickly creating tools
 
-This examples showcases a quick way to create multiple tools from the same
+This example showcases a quick way to create multiple tools from the same
 wrapper.
 
 ```python
 from langchain_community.tools.searx_search.tool import SearxSearchResults
 
 wrapper = SearxSearchWrapper(searx_host="**")
-github_tool = SearxSearchResults(name="Github", wrapper=wrapper,
+github_tool = SearxSearchResults(name="GitHub", wrapper=wrapper,
                             kwargs = {
                                 "engines": ["github"],
                                 })

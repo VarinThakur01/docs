@@ -7,7 +7,7 @@ title: BM25
 >`BM25Retriever` retriever uses the [`rank_bm25`](https://github.com/dorianbrown/rank_bm25) package.
 
 ```python
-%pip install -qU  rank_bm25
+pip install -qU  rank_bm25
 ```
 
 ```python
@@ -50,7 +50,7 @@ result = retriever.invoke("foo")
 result
 ```
 
-```output
+```text
 [Document(metadata={}, page_content='foo'),
  Document(metadata={}, page_content='foo bar'),
  Document(metadata={}, page_content='hello'),
@@ -86,7 +86,7 @@ result = retriever.invoke("bar")
 result
 ```
 
-```output
+```text
 [Document(metadata={}, page_content='bar'),
  Document(metadata={}, page_content='foo bar')]
 ```

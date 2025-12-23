@@ -14,7 +14,7 @@ For this tutorial we will parse `DeepLake` documentation, and create a RAG syste
 We will parse activeloop's docs for this tutorial using `BeautifulSoup` library and LangChain's document parsers like `Html2TextTransformer`, `AsyncHtmlLoader`. So we will need to install the following libraries:
 
 ```python
-%pip install -qU  tiktoken langchain-openai python-dotenv datasets langchain deeplake beautifulsoup4 html2text ragas
+pip install -qU  tiktoken langchain-openai python-dotenv datasets langchain deeplake beautifulsoup4 html2text ragas
 ```
 
 Also you'll need to create a [Activeloop](https://activeloop.ai) account.
@@ -24,7 +24,7 @@ ORG_ID = "..."
 ```
 
 ```python
-from langchain.chains import RetrievalQA
+from langchain_classic.chains import RetrievalQA
 from langchain_community.vectorstores import DeepLake
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 ```
@@ -148,10 +148,10 @@ Now, let us generate synthetic questions and relevance:
 ```python
 from typing import List
 
-from langchain.chains.openai_functions import (
+from langchain_classic.chains.openai_functions import (
     create_structured_output_chain,
 )
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
@@ -240,7 +240,7 @@ Let us track the training progress:
 db.vectorstore.deep_memory.status("6538939ca0b69a9ca45c528c")
 ```
 
-```output
+```text
 --------------------------------------------------------------
 |                  6538e02ecda4691033a51c5b                  |
 --------------------------------------------------------------
@@ -270,7 +270,7 @@ recall = db.vectorstore.deep_memory.evaluate(
 )
 ```
 
-```output
+```text
 Embedding queries took 0.81 seconds
 ---- Evaluating without model ----
 Recall@1:   9.0%
@@ -349,7 +349,7 @@ for deep_memory in [False, True]:
     print("===================================")
 ```
 
-```output
+```text
 Evaluating with deep_memory = False
 ===================================
 context_recall_score = 0.3763423145
@@ -379,7 +379,7 @@ qa = RetrievalQA.from_chain_type(
 print(qa.run(query))
 ```
 
-```output
+```text
 The base htype of the 'video_seq' tensor is 'video'.
 ```
 
@@ -397,7 +397,7 @@ qa = RetrievalQA.from_chain_type(
 qa.run(query)
 ```
 
-```output
+```text
 The text does not provide information on the base htype of the 'video_seq' tensor.
 ```
 

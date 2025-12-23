@@ -16,11 +16,7 @@ Then we will need to set some environment variables:
 ## Use the wrapper
 
 ```python
-%pip install -qU pyowm
-```
-
-```output
-Note: you may need to restart the kernel to use updated packages.
+pip install -qU pyowm
 ```
 
 ```python
@@ -38,7 +34,7 @@ weather_data = weather.run("London,GB")
 print(weather_data)
 ```
 
-```output
+```text
 In London,GB, the current weather is as follows:
 Detailed status: overcast clouds
 Wind speed: 4.12 m/s, direction: 10°
@@ -60,11 +56,12 @@ import os
 
 from langchain.agents import create_agent
 
+
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["OPENWEATHERMAP_API_KEY"] = ""
 
 tools = [weather.run]
-agent = create_agent("openai:gpt-4.1-mini", tools)
+agent = create_agent("gpt-4.1-mini", tools)
 ```
 
 ```python
@@ -80,7 +77,7 @@ for step in agent.stream(
     step["messages"][-1].pretty_print()
 ```
 
-```output
+```text
 ================================ Human Message =================================
 
 What's the weather like in London?

@@ -22,7 +22,7 @@ search = SearchApiAPIWrapper()
 search.run("Obama's first name?")
 ```
 
-```output
+```text
 'Barack Obama Full name: Barack Hussein Obama II'
 ```
 
@@ -34,7 +34,7 @@ os.environ["OPENAI_API_KEY"] = ""
 
 ```python
 from langchain_community.utilities import SearchApiAPIWrapper
-from langchain_core.tools import Tool
+from langchain.tools import Tool
 from langchain_openai import OpenAI
 
 llm = OpenAI(temperature=0)
@@ -51,7 +51,8 @@ tools = [
 ```python
 from langchain.agents import create_agent
 
-agent = create_agent("openai:gpt-4.1-mini", tools)
+
+agent = create_agent("gpt-4.1-mini", tools)
 ```
 
 ```python
@@ -67,7 +68,7 @@ for step in agent.stream(
     step["messages"][-1].pretty_print()
 ```
 
-```output
+```text
 ================================ Human Message =================================
 
 Who lived longer: Plato, Socrates, or Aristotle?
@@ -121,7 +122,7 @@ search = SearchApiAPIWrapper(engine="google_jobs")
 search.run("AI Engineer", location="Portugal", gl="pt")[0:500]
 ```
 
-```output
+```text
 'No good search result found'
 ```
 
@@ -137,7 +138,7 @@ results = search.results("Large Language Models")
 pprint.pp(results)
 ```
 
-```output
+```text
 {'search_metadata': {'id': 'search_6Lpb2Z8vDqdsPRbrGkVgQzRy',
                      'status': 'Success',
                      'created_at': '2025-05-11T03:39:28Z',

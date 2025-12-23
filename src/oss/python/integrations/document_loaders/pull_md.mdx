@@ -41,7 +41,7 @@ documents = loader.load()
 documents[0].metadata
 ```
 
-```output
+```text
 {'source': 'https://example.com',
  'page_content': '# Example Domain\nThis domain is used for illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.'}
 ```
@@ -49,6 +49,8 @@ documents[0].metadata
 ## Lazy Load
 
 No lazy loading is implemented. `PullMdLoader` performs a real-time conversion of the provided URL into Markdown format whenever the `load` method is called.
+
+---
 
 ## API reference
 

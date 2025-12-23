@@ -9,11 +9,11 @@ This notebook goes over how to use a retriever that under the hood uses an `SVM`
 Largely based on [github.com/karpathy/randomfun/blob/master/knn_vs_svm.html](https://github.com/karpathy/randomfun/blob/master/knn_vs_svm.html)
 
 ```python
-%pip install -qU  scikit-learn
+pip install -qU  scikit-learn
 ```
 
 ```python
-%pip install -qU  lark
+pip install -qU  lark
 ```
 
 We want to use `OpenAIEmbeddings` so we have to get the OpenAI API Key.
@@ -26,7 +26,7 @@ if "OPENAI_API_KEY" not in os.environ:
     os.environ["OPENAI_API_KEY"] = getpass.getpass("OpenAI API Key:")
 ```
 
-```output
+```text
 OpenAI API Key: ········
 ```
 
@@ -55,7 +55,7 @@ result = retriever.invoke("foo")
 result
 ```
 
-```output
+```python
 [Document(page_content='foo', metadata={}),
  Document(page_content='foo bar', metadata={}),
  Document(page_content='hello', metadata={}),

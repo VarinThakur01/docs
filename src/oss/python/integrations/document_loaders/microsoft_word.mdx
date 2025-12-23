@@ -11,7 +11,7 @@ This covers how to load `Word` documents into a document format that we can use 
 Load .docx using `Docx2txt` into a document.
 
 ```python
-%pip install -qU  docx2txt
+pip install -qU  docx2txt
 ```
 
 ```python
@@ -24,7 +24,7 @@ data = loader.load()
 data
 ```
 
-```output
+```python
 [Document(page_content='Lorem ipsum dolor sit amet.', metadata={'source': './example_data/fake.docx'})]
 ```
 
@@ -42,7 +42,7 @@ data = loader.load()
 data
 ```
 
-```output
+```python
 [Document(page_content='Lorem ipsum dolor sit amet.', metadata={'source': 'example_data/fake.docx'})]
 ```
 
@@ -58,7 +58,7 @@ data = loader.load()
 data[0]
 ```
 
-```output
+```python
 Document(page_content='Lorem ipsum dolor sit amet.', metadata={'source': './example_data/fake.docx', 'category_depth': 0, 'file_directory': './example_data', 'filename': 'fake.docx', 'last_modified': '2023-12-19T13:42:18', 'languages': ['por', 'cat'], 'filetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'category': 'Title'})
 ```
 
@@ -76,7 +76,7 @@ This current implementation of a loader using `Document Intelligence` can incorp
 
 An Azure AI Document Intelligence resource in one of the 3 preview regions: **East US**, **West US2**, **West Europe** - follow [this document](https://learn.microsoft.com/azure/ai-services/document-intelligence/create-document-intelligence-resource?view=doc-intel-4.0.0) to create one if you don't have. You will be passing `<endpoint>` and `<key>` as parameters to the loader.
 
-%pip install -qU  langchain langchain-community azure-ai-documentintelligence
+pip install -qU  langchain langchain-community azure-ai-documentintelligence
 
 ```python
 from langchain_community.document_loaders import AzureAIDocumentIntelligenceLoader

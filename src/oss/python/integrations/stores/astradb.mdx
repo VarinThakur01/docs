@@ -36,7 +36,7 @@ ASTRA_DB_APPLICATION_TOKEN = getpass("ASTRA_DB_APPLICATION_TOKEN = ")
 The LangChain AstraDB integration lives in the `langchain-astradb` package:
 
 ```python
-%pip install -qU langchain-astradb
+pip install -qU langchain-astradb
 ```
 
 ## Instantiation
@@ -73,7 +73,7 @@ kv_store.mget(
 )
 ```
 
-```output
+```text
 [b'value1', b'value2']
 ```
 
@@ -95,11 +95,13 @@ kv_store.mget(
 )
 ```
 
-```output
+```text
 [None, None]
 ```
 
 You can use an `AstraDBByteStore` anywhere you'd use other ByteStores.
+
+---
 
 ## API reference
 

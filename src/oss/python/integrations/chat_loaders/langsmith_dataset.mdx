@@ -18,7 +18,7 @@ Before diving in, let's install our prerequisites.
 Ensure you've installed langchain >= 0.0.311 and have configured your environment with your LangSmith API key.
 
 ```python
-%pip install -qU  langchain langchain-openai
+pip install -qU  langchain langchain-openai
 ```
 
 ```python
@@ -32,7 +32,7 @@ os.environ["LANGSMITH_API_KEY"] = "YOUR API KEY"
 
 ## 1. Select a dataset
 
-This notebook fine-tunes a model directly on selecting which runs to fine-tune on. You will often curate these from traced runs. You can learn more about LangSmith datasets in the docs [docs](https://docs.smith.langchain.com/evaluation/concepts#datasets).
+This notebook fine-tunes a model directly on selecting which runs to fine-tune on. You will often curate these from traced runs. You can learn more about LangSmith datasets in the docs [docs](https://docs.langchain.com/langsmith/evaluation#datasets).
 
 For the sake of this tutorial, we will upload an existing dataset here that you can use.
 
@@ -45,7 +45,7 @@ client = Client()
 ```python
 import requests
 
-url = "https://raw.githubusercontent.com/langchain-ai/langchain/master/docs/docs/integrations/chat_loaders/example_data/langsmith_chat_dataset.json"
+url = "https://raw.githubusercontent.com/langchain-ai/langchain/v0.3/docs/docs/integrations/chat_loaders/example_data/langsmith_chat_dataset.json"
 response = requests.get(url)
 response.raise_for_status()
 data = response.json()
@@ -118,7 +118,7 @@ while status != "succeeded":
 # Now your model is fine-tuned!
 ```
 
-```output
+```text
 Status=[running]... 429.55s. 46.34s
 ```
 
@@ -144,7 +144,7 @@ model = ChatOpenAI(
 model.invoke("There were three ravens sat on a tree.")
 ```
 
-```output
+```text
 AIMessage(content='[{"s": "There were three ravens", "object": "tree", "relation": "sat on"}, {"s": "three ravens", "object": "a tree", "relation": "sat on"}]')
 ```
 

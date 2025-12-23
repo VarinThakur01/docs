@@ -11,7 +11,7 @@ For more information, please see the Deep Lake [documentation](https://docs.deep
 ## Setting up
 
 ```python
-%pip install -qU  langchain-openai langchain-deeplake tiktoken
+pip install -qU  langchain-openai langchain-deeplake tiktoken
 ```
 
 ## Example provided by Activeloop
@@ -86,7 +86,7 @@ Setting `read_only=True` revents accidental modifications to the vector store wh
 ### Retrieval Question/Answering
 
 ```python
-from langchain.chains import RetrievalQA
+from langchain_classic.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
 
 qa = RetrievalQA.from_chain_type(

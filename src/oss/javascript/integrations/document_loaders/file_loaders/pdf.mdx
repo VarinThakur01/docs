@@ -2,17 +2,9 @@
 title: PDFLoader
 ---
 
-```{=mdx}
-
 <Tip>
-**Compatibility**
-
-
-Only available on Node.js.
-
+**Compatibility**: Only available on Node.js.
 </Tip>
-
-```
 
 This notebook provides a quick overview for getting started with `PDFLoader` [document loaders](/oss/integrations/document_loaders). For detailed documentation of all `PDFLoader` features and configurations head to the [API reference](https://api.js.langchain.com/classes/langchain_community_document_loaders_fs_pdf.PDFLoader.html).
 
@@ -34,15 +26,17 @@ To access `PDFLoader` document loader you'll need to install the `@langchain/com
 
 The LangChain PDFLoader integration lives in the `@langchain/community` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core pdf-parse
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core pdf-parse
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core pdf-parse
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core pdf-parse
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -63,7 +57,7 @@ const docs = await loader.load()
 docs[0]
 ```
 
-```output
+```javascript
 Document {
   pageContent: 'Table of Contents\n' +
     'UNITED STATES\n' +
@@ -140,7 +134,7 @@ Document {
 console.log(docs[0].metadata)
 ```
 
-```output
+```javascript
 {
   source: '../../../../data/nke-10k-2023.pdf',
   pdf: {
@@ -178,7 +172,7 @@ const singleDoc = await singleDocPerFileLoader.load();
 console.log(singleDoc[0].pageContent.slice(0, 100))
 ```
 
-```output
+```text
 Table of Contents
 UNITED STATES
 SECURITIES AND EXCHANGE COMMISSION
@@ -192,12 +186,19 @@ By default we use the `pdfjs` build bundled with `pdf-parse`, which is compatibl
 
 In the following example we use the "legacy" (see [pdfjs docs](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions#which-browsersenvironments-are-supported)) build of `pdfjs-dist`, which includes several polyfills not included in the default build.
 
-```{=mdx}
-<Npm2Yarn>
-  pdfjs-dist
-</Npm2Yarn>
 
+<CodeGroup>
+```bash npm
+npm install pdfjs-dist
 ```
+```bash yarn
+yarn add pdfjs-dist
+```
+```bash pnpm
+pnpm add pdfjs-dist
+```
+</CodeGroup>
+
 
 ```typescript
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
@@ -225,7 +226,7 @@ const noExtraSpacesDocs = await noExtraSpacesLoader.load();
 console.log(noExtraSpacesDocs[0].pageContent.slice(100, 250))
 ```
 
-```output
+```text
 (Mark One)
 ☑ ANNUAL REPORT PURSUANT TO SECTION 13 OR 15(D) OF THE SECURITIES EXCHANGE ACT OF 1934
 FOR THE FISCAL YEAR ENDED MAY 31, 2023
@@ -236,7 +237,7 @@ OR
 ## Loading directories
 
 ```typescript
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
+import { DirectoryLoader } from "@langchain/classic/document_loaders/fs/directory";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
@@ -265,7 +266,7 @@ console.log(splitDocs[0]);
 
 ```
 
-```output
+```text
 Unknown file type: Star_Wars_The_Clone_Wars_S06E07_Crisis_at_the_Heart.srt
 Unknown file type: example.txt
 Unknown file type: notion.md
@@ -276,7 +277,7 @@ Unknown file type: no_metadata.md
 Unknown file type: tags_and_frontmatter.md
 Unknown file type: test.mp3
 ```
-```output
+```javascript
 Document {
   pageContent: 'Bitcoin: A Peer-to-Peer Electronic Cash System\n' +
     'Satoshi Nakamoto\n' +
@@ -358,6 +359,8 @@ Document {
   id: undefined
 }
 ```
+
+---
 
 ## API reference
 

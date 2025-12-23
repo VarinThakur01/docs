@@ -12,7 +12,7 @@ This interface will only return things that are printed - therefore, if you want
 </Warning>
 
 ```python
-from langchain_core.tools import Tool
+from langchain.tools import Tool
 from langchain_experimental.utilities import PythonREPL
 ```
 
@@ -24,11 +24,11 @@ python_repl = PythonREPL()
 python_repl.run("print(1+1)")
 ```
 
-```output
+```text
 Python REPL can execute arbitrary code. Use with caution.
 ```
 
-```output
+```text
 '2\n'
 ```
 

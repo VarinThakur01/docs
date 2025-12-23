@@ -1,10 +1,6 @@
-# Pregel
-
 ::: langgraph.pregel.NodeBuilder
     options:
       show_if_no_docstring: true
-      show_root_heading: true
-      show_root_full_path: false
       members:
         - subscribe_only
         - subscribe_to
@@ -19,8 +15,6 @@
 ::: langgraph.pregel.Pregel
     options:
       show_if_no_docstring: true
-      show_root_heading: true
-      show_root_full_path: false
       members:
         - stream
         - astream

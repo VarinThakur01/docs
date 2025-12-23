@@ -10,7 +10,7 @@ This will help you get started with Google Vertex AI [embedding models](/oss/int
 
 ### Integration details
 
-| Class | Package | Local | [Py support](https://python.langchain.com/docs/integrations/text_embedding/google_vertex_ai_palm/) | Downloads | Version |
+| Class | Package | Local | Py support | Downloads | Version |
 | :--- | :--- | :---: | :---: |  :---: | :---: |
 | [`VertexAIEmbeddings`](https://api.js.langchain.com/classes/langchain_google_vertexai.GoogleVertexAIEmbeddings.html) | [`@langchain/google-vertexai`](https://npmjs.com/@langchain/google-vertexai) | ❌ | ✅ | ![NPM - Downloads](https://img.shields.io/npm/dm/@langchain/google-vertexai?style=flat-square&label=%20&) | ![NPM - Version](https://img.shields.io/npm/v/@langchain/google-vertexai?style=flat-square&label=%20&) |
 
@@ -35,7 +35,7 @@ If running in a web environment, you should set the `GOOGLE_VERTEX_AI_WEB_CREDEN
 GOOGLE_VERTEX_AI_WEB_CREDENTIALS={"type":"service_account","project_id":"YOUR_PROJECT-12345",...}
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -46,14 +46,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain `VertexAIEmbeddings` integration lives in the `@langchain/google-vertexai` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/google-vertexai @langchain/core
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/google-vertexai @langchain/core
 ```
+```bash yarn
+yarn add @langchain/google-vertexai @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/google-vertexai @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -78,7 +81,7 @@ Below, see how to index and retrieve data using the `embeddings` object we initi
 
 ```typescript
 // Create a vector store with a sample text
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 
 const text = "LangChain is the framework for building context-aware reasoning applications";
 
@@ -96,7 +99,7 @@ const retrievedDocuments = await retriever.invoke("What is LangChain?");
 retrievedDocuments[0].pageContent;
 ```
 
-```output
+```text
 LangChain is the framework for building context-aware reasoning applications
 ```
 
@@ -116,7 +119,7 @@ const singleVector = await embeddings.embedQuery(text);
 console.log(singleVector.slice(0, 100));
 ```
 
-```output
+```text
 [
     -0.02831101417541504,   0.022063178941607475,  -0.07454229146242142,
     0.006448323838412762,   0.001955120824277401, -0.017617391422390938,
@@ -168,7 +171,7 @@ console.log(vectors[0].slice(0, 100));
 console.log(vectors[1].slice(0, 100));
 ```
 
-```output
+```text
 [
     -0.02831101417541504,   0.022063178941607475,  -0.07454229146242142,
     0.006448323838412762,   0.001955120824277401, -0.017617391422390938,
@@ -242,6 +245,8 @@ console.log(vectors[1].slice(0, 100));
        0.0422002375125885
 ]
 ```
+
+---
 
 ## API reference
 

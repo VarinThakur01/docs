@@ -9,11 +9,7 @@ To get an SerpApi key key, sign up at: [serpapi.com/users/sign_up](https://serpa
 To use the tool with LangChain install following packages
 
 ```python
-%pip install -qU google-search-results langchain-community
-```
-
-```output
-Note: you may need to restart the kernel to use updated packages.
+pip install -qU google-search-results langchain-community
 ```
 
 Then set the environment variable SERPAPI_API_KEY to your SerpApi key or pass the key in as a argument to the wrapper serp_api_key="your secret key".
@@ -35,21 +31,17 @@ tool = GoogleFinanceQueryRun(api_wrapper=GoogleFinanceAPIWrapper())
 tool.run("Google")
 ```
 
-```output
+```text
 '\nQuery: Google\nstock: GOOGL:NASDAQ\nprice: $159.96\npercentage: 0.94\nmovement: Up\nus: price = 42210.57, movement = Down\neurope: price = 23638.56, movement = Up\nasia: price = 38183.26, movement = Up\n'
 ```
 
 In order to create an agent that uses the Google Finance tool install LangGraph
 
 ```python
-%pip install -qU langgraph langchain-openai
+pip install -qU langgraph langchain-openai
 ```
 
-```output
-Note: you may need to restart the kernel to use updated packages.
-```
-
-and use the `create_agent` functionality to initialize a ReAct agent. You will also need to set up your OPEN_API_KEY (visit [platform.openai.com](https://platform.openai.com)) in order to access OpenAI's chat models.
+and use the @[`create_agent`] functionality to initialize a ReAct agent. You will also need to set up your OPEN_API_KEY (visit [platform.openai.com](https://platform.openai.com)) in order to access OpenAI's chat models.
 
 ```python
 import os
@@ -61,19 +53,20 @@ os.environ["SERP_API_KEY"] = ""
 ```python
 from langchain.chat_models import init_chat_model
 
-llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+model = init_chat_model("gpt-4o-mini", model_provider="openai")
 ```
 
 ```python
 from langchain_community.agent_toolkits.load_tools import load_tools
 
-tools = load_tools(["google-scholar", "google-finance"], llm=llm)
+tools = load_tools(["google-scholar", "google-finance"], llm=model)
 ```
 
 ```python
 from langchain.agents import create_agent
 
-agent = create_agent(llm, tools)
+
+agent = create_agent(model, tools)
 
 events = agent.stream(
     {"messages": [("user", "What is Google's stock?")]},
@@ -83,7 +76,7 @@ for event in events:
     event["messages"][-1].pretty_print()
 ```
 
-```output
+```text
 ================================ Human Message =================================
 
 What is Google's stock?

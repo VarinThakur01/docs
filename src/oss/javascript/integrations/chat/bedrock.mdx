@@ -6,11 +6,9 @@ title: BedrockChat
 
 This will help you getting started with Amazon Bedrock [chat models](/oss/langchain/models). For detailed documentation of all `BedrockChat` features and configurations head to the [API reference](https://api.js.langchain.com/classes/langchain_community_chat_models_bedrock.BedrockChat.html).
 
-```{=mdx}
 <Tip>
 The newer [`ChatBedrockConverse` chat model is now available via the dedicated `@langchain/aws`](/oss/integrations/chat/bedrock_converse) integration package. Use [tool calling](/oss/langchain/tools) with more models with this package.
 </Tip>
-```
 
 ## Overview
 
@@ -36,7 +34,7 @@ To access Bedrock models you'll need to create an AWS account, set up the Bedroc
 
 Head to the [AWS docs](https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.html) to sign up for AWS and setup your credentials. You'll also need to turn on model access for your account, which you can do by [following these instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -47,25 +45,31 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain `BedrockChat` integration lives in the `@langchain/community` package. You'll also need to install several official AWS packages as peer dependencies:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core @aws-crypto/sha256-js @aws-sdk/credential-provider-node @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core @aws-crypto/sha256-js @aws-sdk/credential-provider-node @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core @aws-crypto/sha256-js @aws-sdk/credential-provider-node @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core @aws-crypto/sha256-js @aws-sdk/credential-provider-node @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
+```
+</CodeGroup>
 
 You can also use BedrockChat in web environments such as Edge functions or Cloudflare Workers by omitting the @aws-sdk/credential-provider-node dependency and using the web entrypoint:
 
-```{=mdx}
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core @aws-crypto/sha256-js @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
-</Npm2Yarn>
-
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core @aws-crypto/sha256-js @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core @aws-crypto/sha256-js @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core @aws-crypto/sha256-js @smithy/protocol-http @smithy/signature-v4 @smithy/eventstream-codec @smithy/util-utf8 @aws-sdk/types
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -103,7 +107,7 @@ const aiMsg = await llm.invoke([
 aiMsg
 ```
 
-```output
+```text
 AIMessage {
   "content": "J'adore la programmation.",
   "additional_kwargs": {
@@ -129,13 +133,15 @@ AIMessage {
 console.log(aiMsg.content)
 ```
 
-```output
+```text
 J'adore la programmation.
 ```
 
 ## Tool calling
 
 Tool calling with Bedrock models works in a similar way to [other models](/oss/langchain/tools), but note that not all Bedrock models support tool calling. Please refer to the [AWS model documentation](https://docs.aws.amazon.com/bedrock/latest/APIReference/welcome.html) for more information.
+
+---
 
 ## API reference
 

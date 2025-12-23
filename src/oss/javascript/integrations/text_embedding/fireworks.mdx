@@ -24,7 +24,7 @@ Head to [fireworks.ai](https://fireworks.ai/) to sign up to `Fireworks` and gene
 export FIREWORKS_API_KEY="your-api-key"
 ```
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -35,14 +35,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain `FireworksEmbeddings` integration lives in the `@langchain/community` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -64,7 +67,7 @@ Below, see how to index and retrieve data using the `embeddings` object we initi
 
 ```typescript
 // Create a vector store with a sample text
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 
 const text = "LangChain is the framework for building context-aware reasoning applications";
 
@@ -82,7 +85,7 @@ const retrievedDocuments = await retriever.invoke("What is LangChain?");
 retrievedDocuments[0].pageContent;
 ```
 
-```output
+```text
 "LangChain is the framework for building context-aware reasoning applications"
 ```
 
@@ -102,7 +105,7 @@ const singleVector = await embeddings.embedQuery(text);
 console.log(singleVector.slice(0, 100));
 ```
 
-```output
+```text
 [
         0.01666259765625,      0.011688232421875,          -0.1181640625,
           -0.10205078125,       0.05438232421875,      -0.08905029296875,
@@ -154,7 +157,7 @@ console.log(vectors[0].slice(0, 100));
 console.log(vectors[1].slice(0, 100));
 ```
 
-```output
+```text
 [
        0.016632080078125,    0.01165008544921875,          -0.1181640625,
        -0.10186767578125,       0.05438232421875,      -0.08905029296875,
@@ -228,6 +231,8 @@ console.log(vectors[1].slice(0, 100));
      -0.0307159423828125
 ]
 ```
+
+---
 
 ## API reference
 

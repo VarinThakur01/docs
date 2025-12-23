@@ -67,6 +67,7 @@ from langchain.agents import create_agent
 from langchain_community.tools import DuckDuckGoSearchRun, TavilySearchResults
 from langchain_core.rate_limiters import InMemoryRateLimiter
 
+
 # We will use GPT-3.5 Turbo as the baseline and compare against GPT-4o
 gpt_3_5_turbo = init_chat_model(
     "gpt-3.5-turbo",
@@ -91,7 +92,7 @@ rate_limiter = InMemoryRateLimiter(requests_per_second=0.08)
 # tools = [DuckDuckGoSearchRun(rate_limiter=rate_limiter)]
 tools = [TavilySearchResults(max_results=5, rate_limiter=rate_limiter)]
 
-agent = create_agent(gpt_3_5_turbo, tools=tools, state_modifier=instructions)
+agent = create_agent(gpt_3_5_turbo, tools=tools, system_prompt=instructions)
 ```
 
 ### Simulate production data
@@ -178,7 +179,7 @@ convert_runs_to_test(
 
 Once this step is complete, you should see a new dataset in your LangSmith project called "Tweet Writing Task-backtesting TODAYS DATE", with a single experiment like so:
 
-![](/langsmith/images/baseline-experiment.png)
+![Baseline experiment](/langsmith/images/baseline-experiment.png)
 
 ## Benchmark against new system
 
@@ -264,7 +265,7 @@ candidate_results = await client.aevaluate(
 
 After running both experiments, you can view them in your dataset:
 
-![](/langsmith/images/dataset-page.png)
+![Dataset page](/langsmith/images/dataset-page.png)
 
 The results reveal an interesting tradeoff between the two models:
 
@@ -280,6 +281,6 @@ This backtesting exercise revealed that while GPT-4o is generally considered a m
 
 This insight demonstrates the value of backtesting - it helped us identify potential issues before deployment.
 
-![](/langsmith/images/tutorial-comparison-view.png)
+![Tutorial comparison view](/langsmith/images/tutorial-comparison-view.png)
 
 

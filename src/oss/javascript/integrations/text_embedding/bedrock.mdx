@@ -23,7 +23,7 @@ Head to the [AWS docs](https://docs.aws.amazon.com/bedrock/latest/userguide/gett
 
 ### Credentials
 
-If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing of your model calls you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```bash
 # export LANGSMITH_TRACING="true"
@@ -34,14 +34,17 @@ If you want to get automated tracing of your model calls you can also set your [
 
 The LangChain Bedrock integration lives in the `@langchain/aws` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/aws @langchain/core
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/aws @langchain/core
 ```
+```bash yarn
+yarn add @langchain/aws @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/aws @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -70,7 +73,7 @@ Below, see how to index and retrieve data using the `embeddings` object we initi
 
 ```typescript
 // Create a vector store with a sample text
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 
 const text = "LangChain is the framework for building context-aware reasoning applications";
 
@@ -88,7 +91,7 @@ const retrievedDocuments = await retriever.invoke("What is LangChain?");
 retrievedDocuments[0].pageContent;
 ```
 
-```output
+```text
 LangChain is the framework for building context-aware reasoning applications
 ```
 
@@ -108,7 +111,7 @@ const singleVector = await embeddings.embedQuery(text);
 console.log(singleVector.slice(0, 100));
 ```
 
-```output
+```text
 [
          0.625,  0.111328125,      0.265625,   -0.20019531,  0.40820312,
   -0.010803223,  -0.22460938, -0.0002937317,    0.29882812, -0.14355469,
@@ -146,7 +149,7 @@ console.log(vectors[0].slice(0, 100));
 console.log(vectors[1].slice(0, 100));
 ```
 
-```output
+```text
 [
          0.625,  0.111328125,      0.265625,   -0.20019531,  0.40820312,
   -0.010803223,  -0.22460938, -0.0002937317,    0.29882812, -0.14355469,
@@ -216,6 +219,8 @@ const embeddingsWithCustomClient = new BedrockEmbeddings({
   client,
 });
 ```
+
+---
 
 ## API reference
 

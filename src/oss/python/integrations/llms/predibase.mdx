@@ -13,7 +13,7 @@ To run this notebook, you'll need a [Predibase account](https://predibase.com/fr
 You'll also need to install the Predibase Python package:
 
 ```python
-%pip install -qU  predibase
+pip install -qU  predibase
 import os
 
 os.environ["PREDIBASE_API_TOKEN"] = "{PREDIBASE_API_TOKEN}"
@@ -120,7 +120,7 @@ llm = Predibase(
 ## SequentialChain
 
 ```python
-from langchain.chains import LLMChain
+from langchain_classic.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 ```
 
@@ -147,7 +147,7 @@ review_chain = LLMChain(llm=llm, prompt=prompt_template)
 
 ```python
 # This is the overall chain where we run these two chains in sequence.
-from langchain.chains import SimpleSequentialChain
+from langchain_classic.chains import SimpleSequentialChain
 
 overall_chain = SimpleSequentialChain(
     chains=[synopsis_chain, review_chain], verbose=True

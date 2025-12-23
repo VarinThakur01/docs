@@ -46,11 +46,7 @@ docker run -p 1231:1231
 
 ```python
 # Install package
-%pip install --quiet "dedoc[torch]"
-```
-
-```output
-Note: you may need to restart the kernel to use updated packages.
+pip install --quiet "dedoc[torch]"
 ```
 
 ## Instantiation
@@ -68,7 +64,7 @@ docs = loader.load()
 docs[0].page_content[:100]
 ```
 
-```output
+```text
 '\nMadam Speaker, Madam Vice President, our First Lady and Second Gentleman. Members of Congress and t'
 ```
 
@@ -82,7 +78,7 @@ for doc in docs:
     break
 ```
 
-```output
+```text
 Madam Speaker, Madam Vice President, our First Lady and Second Gentleman. Members of Congress and t
 ```
 
@@ -118,7 +114,7 @@ docs = loader.load()
 docs[0].page_content[:400]
 ```
 
-```output
+```text
 '\nMadam Speaker, Madam Vice President, our First Lady and Second Gentleman. Members of Congress and the Cabinet. Justices of the Supreme Court. My fellow Americans.  \n\n\n\nLast year COVID-19 kept us apart. This year we are finally together again. \n\n\n\nTonight, we meet as Democrats Republicans and Independents. But most importantly as Americans. \n\n\n\nWith a duty to one another to the American people to '
 ```
 
@@ -127,7 +123,7 @@ docs[0].page_content[:400]
 `DedocFileLoader` supports different types of document splitting into parts (each part is returned separately).
 For this purpose, `split` parameter is used with the following options:
 
-* `document` (default value): document text is returned as a single langchain `Document` object (don't split);
+* `document` (default value): document text is returned as a single langchain @[`Document`] object (don't split);
 * `page`: split document text into pages (works for `PDF`, `DJVU`, `PPTX`, `PPT`, `ODP`);
 * `node`: split document text into `Dedoc` tree nodes (title nodes, list item nodes, raw text nodes);
 * `line`: split document text into textual lines.
@@ -144,7 +140,7 @@ docs = loader.load()
 len(docs)
 ```
 
-```output
+```text
 2
 ```
 
@@ -153,8 +149,8 @@ len(docs)
 `DedocFileLoader` supports tables handling when `with_tables` parameter is
 set to `True` during loader initialization (`with_tables=True` by default).
 
-Tables are not split - each table corresponds to one langchain `Document` object.
-For tables, `Document` object has additional `metadata` fields `type="table"`
+Tables are not split - each table corresponds to one langchain @[`Document`] object.
+For tables, @[`Document`] object has additional `metadata` fields `type="table"`
 and `text_as_html` with table `HTML` representation.
 
 ```python
@@ -165,7 +161,7 @@ docs = loader.load()
 docs[1].metadata["type"], docs[1].metadata["text_as_html"][:200]
 ```
 
-```output
+```text
 ('table',
  '<table border="1" style="border-collapse: collapse; width: 100%;">\n<tbody>\n<tr>\n<td colspan="1" rowspan="1">Team</td>\n<td colspan="1" rowspan="1"> &quot;Payroll (millions)&quot;</td>\n<td colspan="1" r')
 ```
@@ -176,7 +172,7 @@ docs[1].metadata["type"], docs[1].metadata["text_as_html"][:200]
 to `True` during loader initialization (`with_attachments=False` by default).
 
 Attachments are split according to the `split` parameter.
-For attachments, langchain `Document` object has an additional metadata
+For attachments, langchain @[`Document`] object has an additional metadata
 field `type="attachment"`.
 
 ```python
@@ -190,7 +186,7 @@ docs = loader.load()
 docs[1].metadata["type"], docs[1].page_content
 ```
 
-```output
+```text
 ('attachment',
  '\nContent-Type\nmultipart/mixed; boundary="0000000000005d654405f082adb7"\nDate\nFri, 23 Dec 2022 12:08:48 -0600\nFrom\nMallori Harrell [mallori@unstructured.io](mailto:mallori@unstructured.io)\nMIME-Version\n1.0\nMessage-ID\n[CAPgNNXSzLVJ-d1OCX_TjFgJU7ugtQrjFybPtAMmmYZzphxNFYg@mail.gmail.com](mailto:CAPgNNXSzLVJ-d1OCX_TjFgJU7ugtQrjFybPtAMmmYZzphxNFYg@mail.gmail.com)\nSubject\nFake email with attachment\nTo\nMallori Harrell [mallori@unstructured.io](mailto:mallori@unstructured.io)')
 ```
@@ -222,7 +218,7 @@ docs = loader.load()
 docs[0].page_content[:400]
 ```
 
-```output
+```text
 '\n2\n\nZ. Shen et al.\n\n37], layout detection [38, 22], table detection [26], and scene text detection [4].\n\nA generalized learning-based framework dramatically reduces the need for the\n\nmanual speciﬁcation of complicated rules, which is the status quo with traditional\n\nmethods. DL has the potential to transform DIA pipelines and beneﬁt a broad\n\nspectrum of large-scale document digitization projects.\n'
 ```
 
@@ -256,10 +252,6 @@ docs = loader.load()
 docs[0].page_content[:400]
 ```
 
-```output
+```text
 '\nMadam Speaker, Madam Vice President, our First Lady and Second Gentleman. Members of Congress and the Cabinet. Justices of the Supreme Court. My fellow Americans.  \n\n\n\nLast year COVID-19 kept us apart. This year we are finally together again. \n\n\n\nTonight, we meet as Democrats Republicans and Independents. But most importantly as Americans. \n\n\n\nWith a duty to one another to the American people to '
-```
-
-```python
-
 ```

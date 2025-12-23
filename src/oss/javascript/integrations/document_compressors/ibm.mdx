@@ -94,7 +94,7 @@ const props = {
 const instance = new WatsonxLLM(props);
 ```
 
-If you want to get automated tracing from individual queries, you can also set your [LangSmith](https://docs.smith.langchain.com/) API key by uncommenting below:
+If you want to get automated tracing from individual queries, you can also set your [LangSmith](https://docs.langchain.com/langsmith/home) API key by uncommenting below:
 
 ```typescript
 // process.env.LANGSMITH_API_KEY = "<YOUR API KEY HERE>";
@@ -105,14 +105,17 @@ If you want to get automated tracing from individual queries, you can also set y
 
 This document compressor lives in the `@langchain/community` package:
 
-```{=mdx}
-import IntegrationInstallTooltip from "@mdx_components/integration_install_tooltip.mdx";
-<IntegrationInstallTooltip></IntegrationInstallTooltip>
-
-<Npm2Yarn>
-  @langchain/community @langchain/core
-</Npm2Yarn>
+<CodeGroup>
+```bash npm
+npm install @langchain/community @langchain/core
 ```
+```bash yarn
+yarn add @langchain/community @langchain/core
+```
+```bash pnpm
+pnpm add @langchain/community @langchain/core
+```
+</CodeGroup>
 
 ## Instantiation
 
@@ -135,7 +138,7 @@ First, set up a basic RAG ingest pipeline with embeddings, a text splitter and a
 
 ```javascript
 import { readFileSync } from "node:fs";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { WatsonxEmbeddings } from "@langchain/community/embeddings/ibm";
 import { CharacterTextSplitter } from "@langchain/textsplitters";
 
@@ -163,7 +166,7 @@ const result = await vectorStoreRetriever.invoke(query);
 console.log(result);
 ```
 
-```output
+```javascript
 [
   Document {
     pageContent: 'And I did that 4 days ago, when I nominated Circuit Court of Appeals Judge Ketanji Brown Jackson. One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence.',
@@ -215,7 +218,7 @@ const compressed = await reranker.rerank(result, query);
 console.log(compressed);
 ```
 
-```output
+```text
 [
   { index: 0, relevanceScore: 0.726995587348938 },
   { index: 1, relevanceScore: 0.5758284330368042 },
@@ -231,7 +234,7 @@ const compressedWithResults = await reranker.compressDocuments(result, query);
 console.log(compressedWithResults);
 ```
 
-```output
+```javascript
 [
   Document {
     pageContent: 'And I did that 4 days ago, when I nominated Circuit Court of Appeals Judge Ketanji Brown Jackson. One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence.',
@@ -267,6 +270,8 @@ console.log(compressedWithResults);
   }
 ]
 ```
+
+---
 
 ## API reference
 

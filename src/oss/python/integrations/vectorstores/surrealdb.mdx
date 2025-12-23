@@ -80,7 +80,7 @@ d4 = Document(page_content="this is surreal", metadata={"source": _url})
 vector_store.add_documents(documents=[d1, d2, d3, d4], ids=["1", "2", "3", "4"])
 ```
 
-```output
+```python
 ['1', '2', '3', '4']
 ```
 
@@ -94,7 +94,7 @@ updated_document = Document(
 vector_store.add_documents(documents=[updated_document], ids=["3"])
 ```
 
-```output
+```python
 ['3']
 ```
 
@@ -120,7 +120,7 @@ for doc in results:
     print(f"{doc.page_content} [{doc.metadata}]")
 ```
 
-```output
+```text
 this is surreal [{'source': 'https://surrealdb.com'}]
 ```
 
@@ -134,7 +134,7 @@ for doc, score in results:
     print(f"[similarity={score:.0%}] {doc.page_content}")
 ```
 
-```output
+```text
 [similarity=57%] this is surreal
 ```
 
@@ -149,7 +149,7 @@ retriever = vector_store.as_retriever(
 retriever.invoke("surreal")
 ```
 
-```output
+```text
 [Document(id='4', metadata={'source': 'https://surrealdb.com'}, page_content='this is surreal')]
 ```
 
@@ -160,13 +160,15 @@ For guides on how to use this vector store for retrieval-augmented generation (R
 - [How-to: Question and answer with RAG](https://python.langchain.com/docs/how_to/#qa-with-rag)
 - [Retrieval conceptual docs](https://python.langchain.com/docs/concepts/retrieval/)
 
+---
+
 ## API reference
 
-For detailed documentation of all SurrealDBVectorStore features and configurations head to the API reference: [python.langchain.com/api_reference/surrealdb/index.html](https://python.langchain.com/api_reference/surrealdb/index.html)
+For detailed documentation of all `SurrealDBVectorStore` features and configurations head to the API reference: [python.langchain.com/api_reference/surrealdb/index.html](https://python.langchain.com/api_reference/surrealdb/index.html)
 
 ## Next steps
 
 - look at the [basic example](https://github.com/surrealdb/langchain-surrealdb/tree/main/examples/basic). Use the Dockerfile to try it out!
 - look at the [graph example](https://github.com/surrealdb/langchain-surrealdb/tree/main/examples/graph)
-- try the [jupyther notebook](https://github.com/langchain-ai/langchain/blob/master/docs/docs/integrations/vectorstores/surrealdb.ipynb)
+- try the [jupyter notebook](https://github.com/langchain-ai/langchain/blob/v0.3/docs/docs/integrations/vectorstores/surrealdb.ipynb)
 - [Awesome SurrealDB](https://github.com/surrealdb/awesome-surreal), A curated list of SurrealDB resources, tools, utilities, and applications

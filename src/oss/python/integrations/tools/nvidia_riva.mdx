@@ -125,11 +125,7 @@ When this runnable is called on an input, it takes iterable text chunks and stre
 The NVIDIA Riva client library must be installed.
 
 ```python
-%pip install -qU nvidia-riva-client
-```
-
-```output
-Note: you may need to restart the kernel to use updated packages.
+pip install -qU nvidia-riva-client
 ```
 
 ## 3. Setup
@@ -158,7 +154,7 @@ print(json.dumps(RivaASR.schema(), indent=2))
 print(json.dumps(RivaTTS.schema(), indent=2))
 ```
 
-```output
+```json
 {
   "title": "RivaASR",
   "description": "A runnable that performs Automatic Speech Recognition (ASR) using NVIDIA Riva.",
@@ -423,7 +419,7 @@ You can use any [LangChain compatible LLM](https://python.langchain.com/v0.1/doc
 LangChain compatible NVIDIA LLMs from [NVIDIA AI Foundation Endpoints](https://www.nvidia.com/en-us/ai-data-science/foundation-models/) can also be used by following these [instructions](https://python.langchain.com/docs/integrations/chat/nvidia_ai_endpoints).
 
 ```python
-%pip install -qU langchain-nvidia-ai-endpoints
+pip install -qU langchain-nvidia-ai-endpoints
 ```
 
 Follow the [instructions for LangChain](https://python.langchain.com/docs/integrations/chat/nvidia_ai_endpoints/) to use NVIDIA NIM in your speech-enabled LangChain application.
