@@ -1,5 +1,5 @@
 ---
-title: QA over Knowledge Graphs with SAP HANA Cloud Knowledge Graph Engine
+title: Question Answering with `HanaSparqlQAChain`
 ---
 ## Setup and Installation
 
@@ -45,7 +45,7 @@ You need:
 
 Follow the steps here [HanaRdfGraph](/oss/integrations/graphs/sap_hana_rdf_graph) to know more about creating a `HanaRdfGraph` instance.
 
-Import the HanaSparqlQAChain
+Import the `HanaSparqlQAChain`
 
 ```python
 from langchain_hana import HanaSparqlQAChain
@@ -57,7 +57,7 @@ qa_chain = HanaSparqlQAChain.from_llm(
 )
 ```
 
-## Pipeline Overview
+## Pipeline overview
 
 1. **SPARQL Generation**
   * Uses `SPARQL_GENERATION_SELECT_PROMPT`
@@ -70,13 +70,13 @@ qa_chain = HanaSparqlQAChain.from_llm(
   * Ensure required common prefixes are declared (`rdf:`, `rdfs:`, `owl:`, `xsd:`)
 3. **Execution**
   * Calls `graph.query(generated_sparql)`
-4. **Answer Formulation**  x
+4. **Answer Formulation**
   * Uses `SPARQL_QA_PROMPT`
   * Inputs:
     * `context` (raw query results)
     * `prompt` (original question)
 
-## Prompt Templates
+## Prompt templates
 
 ### "SPARQL Generation" prompt
 
@@ -88,7 +88,7 @@ The `qa_prompt` instructs the LLM to create a natural language answer based sole
 
 The default prompts can be found here: [`prompts.py`](https://github.com/SAP/langchain-integration-for-sap-hana-cloud/blob/main/langchain_hana/chains/graph_qa/prompts.py)
 
-## Customizing Prompts
+## Customizing prompts
 
 You can override the defaults at initialization:
 
@@ -103,17 +103,10 @@ qa_chain = HanaSparqlQAChain.from_llm(
 )
 ```
 
-Or swap them afterward:
-
-```python
-qa_chain.sparql_generation_chain.prompt = YOUR_SPARQL_PROMPT
-qa_chain.qa_chain.prompt              = YOUR_QA_PROMPT
-```
-
 > - `sparql_generation_prompt` must have the input variables: `["schema", "prompt"]`
 > - `qa_prompt` must have the input variables: `["context", "prompt"]`
 
-## Example: Question Answering over a “Movies” Knowledge Graph
+## Example: Question answering over a “Movies” knowledge graph
 
 **Prerequisite**:
 You must have an SAP HANA Cloud instance with the **triple store** feature enabled.
@@ -127,12 +120,6 @@ Below we’ll:
 3. Ask natural-language questions and print out the chain’s responses
 
 This demonstrates how the LLM generates SPARQL under the hood, executes it against SAP HANA, and returns a human-readable answer.
-
-We'll use the `sap-ai-sdk-gen` package. Currently still installed via:
-
-`pip install "sap-ai-sdk-gen[all]"`
-
-Please check [sap-ai-sdk-gen](https://pypi.org/project/sap-ai-sdk-gen/) for future releases.
 
 First, create a connection to your SAP HANA Cloud instance.
 
@@ -178,7 +165,8 @@ graph = HanaRdfGraph(
 
 ```python
 # a basic graph schema is extracted from the data graph. This schema will guide the LLM to generate a proper SPARQL query.
-print(graph.get_schema)
+schema_graph = graph.get_schema
+print(schema_graph.serialize(format="turtle"))
 ```
 
 ```output
