@@ -25,8 +25,7 @@ connection = dbapi.connect(
     address=os.environ.get("HANA_DB_ADDRESS"),
     port=os.environ.get("HANA_DB_PORT"),
     user=os.environ.get("HANA_DB_USER"),
-    password=os.environ.get("HANA_DB_PASSWORD"),
-    autocommit=True,
+    password=os.environ.get("HANA_DB_PASSWORD")
 )
 ```
 
@@ -137,9 +136,7 @@ connection = dbapi.connect(
     address=os.environ.get("HANA_DB_ADDRESS"),
     port=os.environ.get("HANA_DB_PORT"),
     user=os.environ.get("HANA_DB_USER"),
-    password=os.environ.get("HANA_DB_PASSWORD"),
-    autocommit=True,
-    sslValidateCertificate=False,
+    password=os.environ.get("HANA_DB_PASSWORD")
 )
 ```
 

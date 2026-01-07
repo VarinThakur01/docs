@@ -384,7 +384,7 @@ print(f"Filter: {advanced_filter}")
 print_filter_result(db.similarity_search("just testing", k=5, filter=advanced_filter))
 ```
 
-```python
+```text
 Filter: {'name': {'$contains': 'bob'}}
 {'name': 'Bob Johnson', 'is_active': False, 'id': 2, 'height': 5.7}
 Filter: {'name': {'$contains': 'bo'}}
@@ -496,6 +496,12 @@ print(rows[0][0])  # The text
 print(rows[0][1])  # The metadata
 print(rows[0][2])  # The vector
 cur.close()
+```
+
+```text
+A simple document
+{"start": 100, "end": 150, "doc_name": "simple.txt"}
+[-0.01989901,0.027851747,...]
 ```
 
 Custom tables must have at least three columns that match the semantics of a standard table
