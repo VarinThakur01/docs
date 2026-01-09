@@ -577,6 +577,7 @@ Show the value of the inserted document in the three columns
 Since, HANA's dbapi driver outputs the vector columns in Buffer objects by default, we will create a helper function to convert the function into a list of numbers.
 
 ```typescript
+// Helper function to parse fvecs format for REAL_VECTOR
 function parseFvecs(b: ArrayBuffer): number[] {
     const v = new DataView(b)
     const d = v.getUint32(0, true)
