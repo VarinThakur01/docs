@@ -486,22 +486,31 @@ cur.close()
 
 Show the value of the inserted document in the three columns
 
+Since, HANA's dbapi driver outputs the vector columns in fvecs bytes objects by default, we will create a helper function to convert the function into a list of numbers.
+
 ```python
+import struct
+# Helper function to parse fvecs format for REAL_VECTOR
+def parseFvecs(fvecs):
+    dim = struct.unpack_from("<I", fvecs, 0)[0]
+    return list(struct.unpack_from("<%sf" % str(dim), fvecs, 4))
+
 cur = connection.cursor()
 cur.execute(
-    "SELECT VEC_TEXT, VEC_META, TO_NVARCHAR(VEC_VECTOR) FROM LANGCHAIN_DEMO_NEW_TABLE LIMIT 1"
+    "SELECT * FROM LANGCHAIN_DEMO_NEW_TABLE LIMIT 1"
 )
 rows = cur.fetchall()
 print(rows[0][0])  # The text
 print(rows[0][1])  # The metadata
-print(rows[0][2])  # The vector
+embedding = parseFvecs(rows[0][2])
+print(len(embedding), embedding[:3] + ['...'] + embedding[-3:])  # The vector
 cur.close()
 ```
 
 ```text
 A simple document
 {"start": 100, "end": 150, "doc_name": "simple.txt"}
-[-0.01989901,0.027851747,...]
+768 [-0.01989901065826416, 0.02785174734890461, 0.0020877711940556765, '...', 0.0183248370885849, 0.009469633921980858, 0.04312701150774956]
 ```
 
 Custom tables must have at least three columns that match the semantics of a standard table
@@ -546,12 +555,13 @@ docs = [
 db.add_documents(docs)
 
 # Check if data has been inserted into our own table
-cur.execute(f"SELECT * FROM {my_own_table_name} LIMIT 1")
+cur.execute(f"SELECT SOME_OTHER_COLUMN, MY_TEXT, MY_METADATA, TO_NVARCHAR(MY_VECTOR) AS MY_VECTOR FROM {my_own_table_name} LIMIT 1")
 rows = cur.fetchall()
-print(rows[0][0])  # Value of column "SOME_OTHER_DATA". Should be NULL/None
+print(rows[0][0])  # Value of column "SOME_OTHER_COLUMN". Should be NULL/None
 print(rows[0][1])  # The text
 print(rows[0][2])  # The metadata
-print(rows[0][3])  # The vector
+embedding = parseFvecs(rows[0][3])
+print(len(embedding), embedding[:3] + ['...'] + embedding[-3:])  # The vector
 
 cur.close()
 ```
@@ -560,7 +570,7 @@ cur.close()
 None
 Some other text
 {"start": 400, "end": 450, "doc_name": "other.txt"}
-<memory at 0x110f856c0>
+768 [0.016170687973499298, -0.01129427831619978, -0.0005921399570070207, '...', 0.017849743366241455, 0.0003932560794055462, -0.00045805066474713385]
 ```
 
 Add another document and perform a similarity search on the custom table.
@@ -641,7 +651,8 @@ print(rows[0][1])  # The text
 print(
     rows[0][2]
 )  # The metadata without the "CUSTOMTEXT" data, as this is extracted into a sperate column
-print(rows[0][3])  # The vector
+embedding = parseFvecs(rows[0][3])
+print(len(embedding), embedding[:3] + ['...'] + embedding[-3:])  # The vector
 
 cur.close()
 ```
@@ -650,7 +661,7 @@ cur.close()
 Filters on this value are very performant
 Some other text
 {"start": 400, "end": 450, "doc_name": "other.txt", "CUSTOMTEXT": "Filters on this value are very performant"}
-<memory at 0x110f859c0>
+768 [0.016170687973499298, -0.01129427831619978, -0.0005921399570070207, '...', 0.017849743366241455, 0.0003932560794055462, -0.00045805066474713385]
 ```
 
 The special columns are completely transparent to the rest of the langchain interface. Everything works as it did before, just more performant.

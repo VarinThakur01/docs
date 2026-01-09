@@ -574,10 +574,18 @@ VEC_VECTOR: REAL_VECTOR
 
 Show the value of the inserted document in the three columns
 
+Since, HANA's dbapi driver outputs the vector columns in Buffer objects by default, we will create a helper function to convert the function into a list of numbers.
+
 ```typescript
+function parseFvecs(b: ArrayBuffer): number[] {
+    const v = new DataView(b)
+    const d = v.getUint32(0, true)
+    return Array.from({ length: d }, (_, i) => v.getFloat32(4 + i * 4, true))
+}
+
 const resultVal = await new Promise<any[]>((resolve, reject) => {
   client.exec(
-    `"SELECT VEC_TEXT, VEC_META, TO_NVARCHAR(VEC_VECTOR) AS VEC_VECTOR FROM LANGCHAIN_DEMO_NEW_TABLE LIMIT 1"`,
+    `SELECT * FROM LANGCHAIN_DEMO_NEW_TABLE LIMIT 1`,
     (err: Error, rows: any) => {
       if (err) {
         reject(err);
@@ -590,14 +598,15 @@ const resultVal = await new Promise<any[]>((resolve, reject) => {
 rowVal.forEach((r) => {
   console.log(`VEC_TEXT: ${r.VEC_TEXT}`); // The text
   console.log(`VEC_META: ${r.VEC_META}`); // The metadata
-  console.log(`VEC_VECTOR: ${r.VEC_VECTOR}`); // The vector
+  const embedding = parseFvecs(r.VEC_VECTOR);
+  console.log(`VEC_VECTOR: ${embedding.length, embedding.slice(0, 3).concat(['...']).concat(embedding.slice(-3))}`); // The vector
 });
 ```
 
 ```text
 VEC_TEXT: A simple document
 VEC_META: {"start": 100, "end": 150, "docName": "simple.txt"}
-VEC_VECTOR: [-0.01989901,0.027851747,...]
+VEC_VECTOR: 768 [-0.01989901065826416, 0.02785174734890461, 0.0020877711940556765, '...', 0.0183248370885849, 0.009469633921980858, 0.04312701150774956]
 ```
 
 Custom tables must have at least three columns that match the semantics of a standard table
@@ -666,7 +675,8 @@ rowOwnTable.forEach((r) => {
   console.log(`SOME_OTHER_COLUMN: ${r.SOME_OTHER_COLUMN}`); // should be NULL
   console.log(`MY_TEXT: ${r.MY_TEXT}`); // The text
   console.log(`MY_METADATA: ${r.MY_METADATA}`); // The metadata
-  console.log(`MY_VECTOR: ${r.MY_VECTOR}`); // The vector
+  const embedding = parseFvecs(r.MY_VECTOR);
+  console.log(`MY_VECTOR: ${embedding.length, embedding.slice(0, 3).concat(['...']).concat(embedding.slice(-3))}`); // The vector
 });
 ```
 
@@ -674,7 +684,7 @@ rowOwnTable.forEach((r) => {
 SOME_OTHER_COLUMN: null
 MY_TEXT: Some other text
 MY_METADATA: {"start":400,"end":450,"docName":"other.txt"}
-MY_VECTOR: Buffer(...)
+MY_VECTOR: 768 [0.016170687973499298, -0.01129427831619978, -0.0005921399570070207, '...', 0.017849743366241455, 0.0003932560794055462, -0.00045805066474713385]
 ```
 
 Add another document and perform a similarity search on the custom table.
@@ -772,7 +782,8 @@ rowPerformant.forEach((r) => {
   console.log(`CUSTOMTEXT: ${r.CUSTOMTEXT}`); // The custom text metadata
   console.log(`MY_TEXT: ${r.MY_TEXT}`); // The text
   console.log(`MY_METADATA: ${r.MY_METADATA}`); // The metadata
-  console.log(`MY_VECTOR: ${r.MY_VECTOR}`); // The vector
+  const embedding = parseFvecs(r.MY_VECTOR);
+  console.log(`MY_VECTOR: ${embedding.length, embedding.slice(0, 3).concat(['...']).concat(embedding.slice(-3))}`); // The vector
 });
 ```
 
@@ -780,7 +791,7 @@ rowPerformant.forEach((r) => {
 CUSTOMTEXT: Filters on this value are very performant
 MY_TEXT: Some other text
 MY_METADATA: {"start":400,"end":450,"docName":"other.txt","CUSTOMTEXT":"Filters on this value are very performant"}
-MY_VECTOR: Buffer(...)
+768 [0.016170687973499298, -0.01129427831619978, -0.0005921399570070207, '...', 0.017849743366241455, 0.0003932560794055462, -0.00045805066474713385]
 ```
 
 The special columns are completely transparent to the rest of the langchain interface. Everything works as it did before, just more performant.
